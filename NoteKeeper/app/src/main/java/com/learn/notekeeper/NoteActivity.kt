@@ -5,6 +5,10 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import com.learn.notekeeper.data.course.Course
+import com.learn.notekeeper.data.course.Courses
 
 import kotlinx.android.synthetic.main.activity_note.*
 
@@ -15,10 +19,11 @@ class NoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_note)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        val spinner = findViewById<Spinner>(R.id.spinner_courses)
+        val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
+        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = coursesAdapter
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
