@@ -21,6 +21,8 @@ class NoteActivity : AppCompatActivity() {
     lateinit private var titleView : TextView
     lateinit private var textView : TextView
 
+    lateinit private var note:Note
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ class NoteActivity : AppCompatActivity() {
         val note = getNote()
         if(note == null)
             return;
+        this.note = note
 
         titleView = findViewById<TextView>(R.id.text_note_title)
         titleView.text = note.noteTitle
@@ -96,5 +99,13 @@ class NoteActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        note.noteTitle = titleView.text.toString()
+        note.noteText = textView.text.toString()
+        note.course = spinner.selectedItem as Course
     }
 }

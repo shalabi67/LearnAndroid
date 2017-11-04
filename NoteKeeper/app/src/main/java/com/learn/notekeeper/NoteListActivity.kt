@@ -30,7 +30,7 @@ class NoteListActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
 
-        initNotesList()
+
     }
 
     private fun initNotesList() {
@@ -58,4 +58,9 @@ class NoteListActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
+    override fun onPostResume() {
+        super.onPostResume()
+
+        initNotesList()
+    }
 }
