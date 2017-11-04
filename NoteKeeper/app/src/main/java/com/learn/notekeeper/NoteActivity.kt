@@ -1,12 +1,16 @@
 package com.learn.notekeeper
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import com.learn.notekeeper.data.course.Course
@@ -15,11 +19,16 @@ import com.learn.notekeeper.data.note.Note
 import com.learn.notekeeper.data.note.Notes
 
 import kotlinx.android.synthetic.main.activity_note.*
+import java.net.URL
 
 class NoteActivity : AppCompatActivity() {
+    companion object {
+        val CAMERA_GET_IMAGE = 1
+    }
     lateinit private var spinner : Spinner
     lateinit private var titleView : TextView
     lateinit private var textView : TextView
+    lateinit var imageView : ImageView
 
     lateinit private var note:Note
 
@@ -29,6 +38,8 @@ class NoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note)
         setSupportActionBar(toolbar)
+
+        imageView = findViewById<ImageView>(R.id.imageview_image)
 
         spinner = findViewById<Spinner>(R.id.spinner_courses)
         val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
@@ -51,6 +62,8 @@ class NoteActivity : AppCompatActivity() {
 
         textView = findViewById<TextView>(R.id.text_note_text)
         textView.text = note.noteText
+
+        imageView.setImageBitmap(note?.image)
 
         val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
         val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
@@ -88,9 +101,29 @@ class NoteActivity : AppCompatActivity() {
                 finish()
                 true
             }
+            R.id.action_camera_image -> getImageFromCamera()
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun getImageFromCamera(): Boolean {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if(intent.resolveActivity(packageManager) == null) {
+            return false
+        }
+        //intent.putExtra(MediaStore.EXTRA_OUTPUT, URI("a.dat"))
+        startActivityForResult(intent, CAMERA_GET_IMAGE)
+
+        return true
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == Activity.RESULT_OK && requestCode == CAMERA_GET_IMAGE && data!=null) {
+            val bitmap:Bitmap = data.extras.get("data") as Bitmap
+            imageView.setImageBitmap(bitmap)
+            note.image = bitmap
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun sendEmail() : Boolean {

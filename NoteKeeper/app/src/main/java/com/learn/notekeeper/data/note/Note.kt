@@ -1,5 +1,6 @@
 package com.learn.notekeeper.data.note
 
+import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
 import com.learn.notekeeper.data.course.Course
@@ -9,6 +10,7 @@ import com.learn.notekeeper.data.course.Course
  */
 data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : Parcelable {
     var course : Course? = null
+    var image : Bitmap? = null
     constructor( noteId : Int,  noteTitle:String,  noteText:String,  course : Course) : this(noteId, noteTitle, noteText) {
         this.course = course
     }

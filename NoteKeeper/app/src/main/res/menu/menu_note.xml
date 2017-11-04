@@ -6,6 +6,9 @@
         android:id="@+id/action_cancel"
         android:title="Cancel" />
     <item
+        android:id="@+id/action_camera_image"
+        android:title="Camera" />
+    <item
         android:id="@+id/action_email_note"
         android:title="Email Note" />
     <item
