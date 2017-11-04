@@ -1,5 +1,6 @@
 package com.learn.notekeeper
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -16,13 +17,17 @@ import com.learn.notekeeper.data.note.Notes
 import kotlinx.android.synthetic.main.activity_note.*
 
 class NoteActivity : AppCompatActivity() {
+    lateinit private var spinner : Spinner
+    lateinit private var titleView : TextView
+    lateinit private var textView : TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note)
         setSupportActionBar(toolbar)
 
-        val spinner = findViewById<Spinner>(R.id.spinner_courses)
+        spinner = findViewById<Spinner>(R.id.spinner_courses)
         val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = coursesAdapter
@@ -37,18 +42,18 @@ class NoteActivity : AppCompatActivity() {
         if(note == null)
             return;
 
-        val titleView = findViewById<TextView>(R.id.text_note_title)
+        titleView = findViewById<TextView>(R.id.text_note_title)
         titleView.text = note.noteTitle
 
-        val textView = findViewById<TextView>(R.id.text_note_text)
+        textView = findViewById<TextView>(R.id.text_note_text)
         textView.text = note.noteText
 
         val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
         val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course.courseTitle }
         spinnerView.setSelection(index)
     }
-    val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
-    val getNoteUsingNotePosition : () -> Note? = {
+    private val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
+    private val getNoteUsingNotePosition : () -> Note? = {
         val position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)
         if(position == -1)
              null
@@ -71,8 +76,25 @@ class NoteActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
+            R.id.action_email_note -> sendEmail()
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun sendEmail() : Boolean {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "message/rfc2822"
+        intent.putExtra(Intent.EXTRA_SUBJECT, titleView.text.toString())
+        intent.putExtra(Intent.EXTRA_TEXT, "Shalabi Note: ${textView.text.toString()}")
+
+        try {
+            startActivity(intent)
+        } catch(e : Exception) {
+            Snackbar.make(titleView, "Could not send email. ${e.message}", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+        }
+
+        return true
     }
 }
