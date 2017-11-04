@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_note_list.*
 class NoteListActivity : AppCompatActivity() {
     companion object {
         val NOTE = "com.learn.notekeeper.NOTE"
+        val NOTE_POSITION = "com.learn.notekeeper.NOTE_POSITION"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,9 @@ class NoteListActivity : AppCompatActivity() {
         val notesAdapter = ArrayAdapter<Note>(this, android.R.layout.simple_list_item_1, Notes.notes)
         notesList.adapter = notesAdapter
 
-        notesList.setOnItemClickListener(listViewItemClick)
+        //notesList.setOnItemClickListener(listViewItemClick)
+
+        notesList.setOnItemClickListener(listViewItemClickUsingNotePosition)
     }
 
     val listViewItemClick : AdapterView.OnItemClickListener  =
@@ -45,6 +48,13 @@ class NoteListActivity : AppCompatActivity() {
                 val note:Note = adapterView.getItemAtPosition(position) as Note
                 val intent:Intent = Intent(this, NoteActivity::class.java)
                 intent.putExtra(NoteListActivity.NOTE, note)
+                startActivity(intent)
+            }
+
+    val listViewItemClickUsingNotePosition : AdapterView.OnItemClickListener  =
+            AdapterView.OnItemClickListener { adapterView, view, position, id ->
+                val intent:Intent = Intent(this, NoteActivity::class.java)
+                intent.putExtra(NoteListActivity.NOTE_POSITION, position)
                 startActivity(intent)
             }
 

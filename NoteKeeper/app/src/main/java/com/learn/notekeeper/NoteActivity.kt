@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.data.note.Note
+import com.learn.notekeeper.data.note.Notes
 
 import kotlinx.android.synthetic.main.activity_note.*
 
@@ -26,12 +27,13 @@ class NoteActivity : AppCompatActivity() {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = coursesAdapter
 
-        readFromIntent()
+        //readFromIntent(getNoteUsingExtra)
+        readFromIntent(getNoteUsingNotePosition)
 
     }
 
-    private fun readFromIntent() {
-        val note = intent.getParcelableExtra<Note>(NoteListActivity.NOTE)
+    private fun readFromIntent(getNote : () -> Note?) {
+        val note = getNote()
         if(note == null)
             return;
 
@@ -45,6 +47,18 @@ class NoteActivity : AppCompatActivity() {
         val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course.courseTitle }
         spinnerView.setSelection(index)
     }
+    val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
+    val getNoteUsingNotePosition : () -> Note? = {
+        val position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)
+        if(position == -1)
+             null
+        else  {
+            val note: Note = Notes.notes[position]
+            note
+        }
+
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
