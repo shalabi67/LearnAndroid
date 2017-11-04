@@ -9,4 +9,8 @@ object Courses {
             Course(2, "Kotlin"),
             Course(3, "C++"),
             Course(4, "Java"))
+
+    fun getCourse(courseId:Int) : Course {
+        return courses.filter { course-> course.courseId == courseId }.first()
+    }
 }

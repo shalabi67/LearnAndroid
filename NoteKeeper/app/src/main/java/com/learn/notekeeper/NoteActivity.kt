@@ -7,8 +7,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
+import com.learn.notekeeper.data.note.Note
 
 import kotlinx.android.synthetic.main.activity_note.*
 
@@ -24,6 +26,24 @@ class NoteActivity : AppCompatActivity() {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = coursesAdapter
 
+        readFromIntent()
+
+    }
+
+    private fun readFromIntent() {
+        val note = intent.getParcelableExtra<Note>(NoteListActivity.NOTE)
+        if(note == null)
+            return;
+
+        val titleView = findViewById<TextView>(R.id.text_note_title)
+        titleView.text = note.noteTitle
+
+        val textView = findViewById<TextView>(R.id.text_note_text)
+        textView.text = note.noteText
+
+        val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
+        val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course.courseTitle }
+        spinnerView.setSelection(index)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
