@@ -31,6 +31,7 @@ class NoteActivity : AppCompatActivity() {
     lateinit var imageView : ImageView
 
     lateinit private var note:Note
+    lateinit private var oldNote:Note
 
 
     var isSave = true
@@ -48,6 +49,13 @@ class NoteActivity : AppCompatActivity() {
 
         //readFromIntent(getNoteUsingExtra)
         readFromIntent(getNoteUsingNotePosition)
+
+        this.oldNote = this.note.copy()
+        val course = note.course
+        if(course != null) {
+            oldNote.course = Course(course.courseId, course.courseTitle)
+        }
+
 
     }
 
@@ -98,6 +106,8 @@ class NoteActivity : AppCompatActivity() {
             R.id.action_email_note -> sendEmail()
             R.id.action_cancel -> {
                 isSave = false
+                note.copyValues(oldNote)
+
                 finish()
                 true
             }

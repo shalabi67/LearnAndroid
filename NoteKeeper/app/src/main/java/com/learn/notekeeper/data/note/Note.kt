@@ -29,6 +29,16 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
         dest?.writeParcelable(course, 0)
     }
 
+    fun copyValues(note:Note) {
+        noteId = note.noteId
+        noteTitle = note.noteTitle
+        noteText = note.noteText
+        val course = note.course
+        if(course != null) {
+            this.course = Course(course.courseId, course.courseTitle)
+        }
+    }
+
     override fun describeContents(): Int {
         return 0
     }
