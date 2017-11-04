@@ -24,6 +24,7 @@ class NoteActivity : AppCompatActivity() {
     lateinit private var note:Note
 
 
+    var isSave = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note)
@@ -52,14 +53,16 @@ class NoteActivity : AppCompatActivity() {
         textView.text = note.noteText
 
         val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
-        val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course.courseTitle }
+        val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
         spinnerView.setSelection(index)
     }
     private val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
     private val getNoteUsingNotePosition : () -> Note? = {
         val position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)
-        if(position == -1)
-             null
+        if(position == -1) {
+            val note: Note = Note(-1, "", "")
+            note
+        }
         else  {
             val note: Note = Notes.notes[position]
             note
@@ -80,6 +83,11 @@ class NoteActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_email_note -> sendEmail()
+            R.id.action_cancel -> {
+                isSave = false
+                finish()
+                true
+            }
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
@@ -104,8 +112,21 @@ class NoteActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
+        if(!isSave) {
+            return
+        }
         note.noteTitle = titleView.text.toString()
         note.noteText = textView.text.toString()
         note.course = spinner.selectedItem as Course
+
+        if(note.noteId == -1) {
+            Notes.addNewNote(note)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        isSave = true
     }
 }

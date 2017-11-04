@@ -7,7 +7,11 @@ import com.learn.notekeeper.data.course.Course
 /**
  * Created by mohammad on 11/3/2017.
  */
-data class Note(val noteId : Int, var noteTitle:String, var noteText:String, var course : Course) : Parcelable {
+data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : Parcelable {
+    var course : Course? = null
+    constructor( noteId : Int,  noteTitle:String,  noteText:String,  course : Course) : this(noteId, noteTitle, noteText) {
+        this.course = course
+    }
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString(),
@@ -28,7 +32,7 @@ data class Note(val noteId : Int, var noteTitle:String, var noteText:String, var
     }
 
     override fun toString(): String {
-        return "Course Title: ${course.courseTitle} | Note Title: $noteTitle"
+        return "Course Title: ${course?.courseTitle} | Note Title: $noteTitle"
     }
 
     companion object CREATOR : Parcelable.Creator<Note> {
