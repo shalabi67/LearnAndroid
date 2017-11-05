@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -19,6 +21,8 @@ class NoteListActivity : AppCompatActivity() {
         val NOTE_POSITION = "com.learn.notekeeper.NOTE_POSITION"
     }
 
+    lateinit var noteRecyclerAdapter : NoteRecyclerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_list)
@@ -30,10 +34,11 @@ class NoteListActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
 
-
+        initNotesList()
     }
 
     private fun initNotesList() {
+        /*
         val notesList = findViewById<ListView>(R.id.list_notes)
         val notesAdapter = ArrayAdapter<Note>(this, android.R.layout.simple_list_item_1, Notes.notes)
         notesList.adapter = notesAdapter
@@ -41,6 +46,18 @@ class NoteListActivity : AppCompatActivity() {
         //notesList.setOnItemClickListener(listViewItemClick)
 
         notesList.setOnItemClickListener(listViewItemClickUsingNotePosition)
+        */
+
+        val notesRecyclerView = findViewById<RecyclerView>(R.id.list_notes)
+        val notesLayoutManager = LinearLayoutManager(this)
+        notesRecyclerView.layoutManager = notesLayoutManager
+
+        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.notes)
+        notesRecyclerView.adapter = noteRecyclerAdapter
+
+        //android.support.constraint.ConstraintLayout
+
+
     }
 
     val listViewItemClick : AdapterView.OnItemClickListener  =
@@ -58,9 +75,10 @@ class NoteListActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-    override fun onPostResume() {
-        super.onPostResume()
+    override fun onResume() {
+        super.onResume()
 
-        initNotesList()
+       // initNotesList()
+        noteRecyclerAdapter.notifyDataSetChanged()
     }
 }
