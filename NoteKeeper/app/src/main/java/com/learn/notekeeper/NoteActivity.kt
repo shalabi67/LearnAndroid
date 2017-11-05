@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -24,6 +25,7 @@ class NoteActivity : AppCompatActivity() {
     companion object {
         val CAMERA_GET_IMAGE = 1
         val ORIGINAL_NOTE = "com.learn.notekeeper.ORIGINAL_NOTE"
+        val TAG = javaClass.simpleName
     }
     lateinit private var spinner : Spinner
     lateinit private var titleView : TextView
@@ -51,8 +53,10 @@ class NoteActivity : AppCompatActivity() {
         readFromIntent(getNoteUsingNotePosition)
 
         if(savedInstanceState == null) {
+            Log.d(TAG, "OnCreate savedInstanceState is null")
             saveOriginalNote()
         } else {
+            Log.d(TAG, "OnCreate savedInstanceState not null")
             restoreOriginalNote(savedInstanceState)
         }
 
@@ -60,6 +64,7 @@ class NoteActivity : AppCompatActivity() {
     }
 
     private fun restoreOriginalNote(savedInstanceState: Bundle?) {
+        Log.d(TAG, "restoreOriginalNote")
         val originalNote = savedInstanceState?.getParcelable<Note>(ORIGINAL_NOTE)
         if(originalNote != null) {
             oldNote = originalNote
@@ -67,6 +72,7 @@ class NoteActivity : AppCompatActivity() {
     }
 
     private fun saveOriginalNote() {
+        Log.d(TAG, "saveOriginalNote")
         this.oldNote = this.note.copy()
         val course = note.course
         if (course != null) {
@@ -76,8 +82,10 @@ class NoteActivity : AppCompatActivity() {
 
     private fun readFromIntent(getNote : () -> Note?) {
         val note = getNote()
-        if(note == null)
+        if(note == null) {
+            Log.w(TAG, "readFromIntent note is null")
             return;
+        }
         this.note = note
 
         titleView = findViewById<TextView>(R.id.text_note_title)
@@ -177,7 +185,7 @@ class NoteActivity : AppCompatActivity() {
         note.course = spinner.selectedItem as Course
 
         if(note.noteId == -1) {
-            Notes.addNewNote(note)
+            Notes.addNote(note)
         }
     }
 

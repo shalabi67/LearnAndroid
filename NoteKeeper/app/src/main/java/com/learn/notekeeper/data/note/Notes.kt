@@ -14,10 +14,14 @@ object Notes {
             Note(++id, "note 4", "", Courses.getCourse(1)),
             Note(++id, "note 5", "", Courses.getCourse(3)))
 
-    fun addNewNote(note : Note) : Note {
+    fun addNote(note : Note) : Note {
         //val note = Note(++id, "", "")
         note.noteId = ++id
         notes.add(note)
         return note
+    }
+
+    fun createNote(noteTitle:String, noteText:String) : Note {
+        return Note(++id, noteTitle, noteText)
     }
 }
