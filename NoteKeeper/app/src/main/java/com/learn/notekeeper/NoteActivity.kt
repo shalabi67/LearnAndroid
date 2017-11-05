@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -24,6 +25,7 @@ import java.net.URL
 class NoteActivity : AppCompatActivity() {
     companion object {
         val CAMERA_GET_IMAGE = 1
+        val ORIGINAL_NOTE = "com.learn.notekeeper.ORIGINAL_NOTE"
     }
     lateinit private var spinner : Spinner
     lateinit private var titleView : TextView
@@ -50,13 +52,28 @@ class NoteActivity : AppCompatActivity() {
         //readFromIntent(getNoteUsingExtra)
         readFromIntent(getNoteUsingNotePosition)
 
-        this.oldNote = this.note.copy()
-        val course = note.course
-        if(course != null) {
-            oldNote.course = Course(course.courseId, course.courseTitle)
+        if(savedInstanceState == null) {
+            saveOriginalNote()
+        } else {
+            restoreOriginalNote(savedInstanceState)
         }
 
 
+    }
+
+    private fun restoreOriginalNote(savedInstanceState: Bundle?) {
+        val originalNote = savedInstanceState?.getParcelable<Note>(ORIGINAL_NOTE)
+        if(originalNote != null) {
+            oldNote = originalNote
+        }
+    }
+
+    private fun saveOriginalNote() {
+        this.oldNote = this.note.copy()
+        val course = note.course
+        if (course != null) {
+            oldNote.course = Course(course.courseId, course.courseTitle)
+        }
     }
 
     private fun readFromIntent(getNote : () -> Note?) {
@@ -171,5 +188,11 @@ class NoteActivity : AppCompatActivity() {
         super.onResume()
 
         isSave = true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        outState?.putParcelable(ORIGINAL_NOTE, oldNote)
     }
 }
