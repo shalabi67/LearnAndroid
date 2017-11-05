@@ -185,7 +185,7 @@ class NoteActivity : AppCompatActivity() {
         note.course = spinner.selectedItem as Course
 
         if(note.noteId == -1) {
-            Notes.addNewNote(note)
+            Notes.addNote(note)
         }
     }
 
