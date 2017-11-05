@@ -20,4 +20,8 @@ object Notes {
         notes.add(note)
         return note
     }
+
+    fun createNote(noteTitle:String, noteText:String) : Note {
+        return Note(++id, noteTitle, noteText)
+    }
 }
