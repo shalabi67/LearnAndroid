@@ -3,14 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.learn.notekeeper.NoteActivity">
     <item
-        android:id="@+id/action_cancel"
-        android:title="Cancel" />
-    <item
         android:id="@+id/action_next_note"
-        android:title="Next note" />
+        android:icon="@android:drawable/ic_media_next"
+        android:title="Next note"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_cancel"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:title="Cancel"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_camera_image"
-        android:title="Camera" />
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="Camera"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_email_note"
         android:title="Email Note" />
