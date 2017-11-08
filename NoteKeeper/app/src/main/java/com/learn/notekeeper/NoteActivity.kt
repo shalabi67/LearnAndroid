@@ -157,6 +157,8 @@ class NoteActivity : AppCompatActivity() {
         displayNote({note})
 
 
+        //disable cancel menue if needed
+        invalidateOptionsMenu()
         return true
     }
 
@@ -224,5 +226,11 @@ class NoteActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
 
         outState?.putParcelable(ORIGINAL_NOTE, oldNote)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val cancelItem = menu?.findItem(R.id.action_next_note)
+        cancelItem?.setEnabled(position < Notes.notes.size - 1)
+        return super.onPrepareOptionsMenu(menu)
     }
 }
