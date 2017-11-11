@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Localization</string>
-    <string name="main_hello">Frensh hello</string>
+    <string name="main_hello">Bonjor</string>
     <string name="todo">TODO</string>
 </resources>
