@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.learn.services.intent_service.MyIntentService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -45,6 +46,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .setAction("Action", null).show()
         val intent = Intent(this, MyStartedService::class.java)
         stopService(intent)
+    }
+
+    fun startTheIntentService(view : View) {
+        Snackbar.make(view, "Start intent service", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+
+        val intent = Intent(this, MyIntentService::class.java)
+        intent.putExtra(MyStartedService.SLEEP_TIME, 10L)
+        startService(intent)
     }
 
     override fun onBackPressed() {
