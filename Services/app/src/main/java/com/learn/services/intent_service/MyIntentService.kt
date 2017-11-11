@@ -3,21 +3,30 @@ package com.learn.services.intent_service
 import android.app.IntentService
 import android.content.Intent
 import android.content.Context
+import android.os.Bundle
+import android.os.ResultReceiver
 import android.util.Log
 import com.learn.services.MyStartedService
 
 class MyIntentService : IntentService("MyIntentServiceWorkerThread") {
     companion object {
         val TAG = MyIntentService::class.java.name
+        val INTENT_RESULT = "MyIntentService.INTENT_RESULT"
+        val OK_CODE = 1
     }
     override fun onHandleIntent(intent: Intent?) {
         Log.i(MyStartedService.TAG, "onHandleIntent, Thread name = ${Thread.currentThread().name}")
         if (intent != null) {
             val sleepTime : Long = intent.getLongExtra(MyStartedService.SLEEP_TIME, 1) as Long
+            val myResultReceiver = intent.getParcelableExtra<ResultReceiver>(MyStartedService.RECEIVER)
             for(i in 1..sleepTime) {
                 Log.i(TAG, "The value is $i, Thread name = ${Thread.currentThread().name}")
                 Thread.sleep( 1000)
             }
+
+            val bundle = Bundle()
+            bundle.putString(INTENT_RESULT, "The operation completed.")
+            myResultReceiver.send(OK_CODE, bundle)
         }
     }
 
