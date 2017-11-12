@@ -28,10 +28,17 @@
             android:name=".intent_service.MyIntentService"
             android:exported="false" />
 
-        <activity android:name=".bind_service.CalculatorActivity"></activity>
+        <activity android:name=".bind_service.CalculatorActivity" />
+
         <service
             android:name=".bind_service.MyBoundService"
             android:exported="false" />
+
+        <activity android:name=".outbound_service_in_another_process.MessengerActivity" />
+
+        <service
+            android:name=".outbound_service_in_another_process.MyMessengerService"
+            android:process=":my_learn_process" />
     </application>
 
 </manifest>

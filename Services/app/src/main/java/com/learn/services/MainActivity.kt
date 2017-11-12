@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.TextView
 import com.learn.services.bind_service.CalculatorActivity
 import com.learn.services.intent_service.MyIntentService
+import com.learn.services.outbound_service_in_another_process.MessengerActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -83,6 +84,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun boundServiceToActivity(view : View) {
         val intent = Intent(this, CalculatorActivity::class.java)
+        startActivity(intent)
+    }
+    fun boundToOutProcess(view : View) {
+        val intent = Intent(this, MessengerActivity::class.java)
         startActivity(intent)
     }
 
