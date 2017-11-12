@@ -28,6 +28,8 @@ class CalculatorActivity : AppCompatActivity() {
         val firstNumber = getIntValueFromView(R.id.etNumOne)
         val secondNumber = getIntValueFromView(R.id.etNumTwo)
         var result : Int = 0
+        if(!isBound)
+            return
 
         when(view.id) {
             R.id.btnAdd -> result = myBoundService.add(firstNumber, secondNumber)
@@ -69,11 +71,11 @@ class CalculatorActivity : AppCompatActivity() {
     var isBound = false
     inner class MyServiceConnection : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
-            isBound = true
+            isBound = false
         }
 
         override fun onServiceConnected(name: ComponentName?, myLocalBinderParam: IBinder?) {
-            isBound = false
+            isBound = true
             if(myLocalBinderParam == null) {
                 return
             }
