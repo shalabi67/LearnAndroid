@@ -1,6 +1,9 @@
 package com.learn.services
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
@@ -19,7 +22,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    companion object {
+        lateinit var applicationContext : Context
+    }
     lateinit var intentServiceTextView : TextView
+    lateinit var startedServiceTextView : TextView
 
     val handler = Handler()
 
@@ -27,6 +34,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        MainActivity.applicationContext = applicationContext
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -40,7 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val startedServiceTextView = findViewById<TextView>(R.id.main_textview_started)
+        startedServiceTextView = findViewById<TextView>(R.id.main_textview_started)
         intentServiceTextView = findViewById<TextView>(R.id.main_textview_intentservice)
     }
     fun startTheStartedService(view : View) {
@@ -123,6 +132,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
+    //To send data from IntentService back to Activity
+    //example on how to use ResultReceiver to send data back.
     inner class MyResultReceiver(handler:Handler?) : ResultReceiver(handler) {
 
         override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
@@ -138,5 +149,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
         }
+    }
+
+    class MyStartedServiceBroadcastReceiverConstants {
+        companion object {
+            val TAG = MyStartedServiceBroadcastReceiver::class.java.name
+            val OPERATION_COMPLETED = "MyStartedServiceBroadcastReceiver.OPERATION_COMPLETED"
+            val SEND_DATA_ACTION = "Send.Data.To.Main"
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val intentFilter = IntentFilter(MyStartedServiceBroadcastReceiverConstants.SEND_DATA_ACTION)
+        registerReceiver(myStartedServiceBroadcastReceiver, intentFilter)
+    }
+    private val myStartedServiceBroadcastReceiver = MyStartedServiceBroadcastReceiver()
+    inner class MyStartedServiceBroadcastReceiver : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(MyStartedServiceBroadcastReceiverConstants.TAG, "onReceive, Thread name = ${Thread.currentThread().name}")
+            val result = intent.getStringExtra(MyStartedServiceBroadcastReceiverConstants.OPERATION_COMPLETED)
+            startedServiceTextView.text = result
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        unregisterReceiver(myStartedServiceBroadcastReceiver)
     }
 }
