@@ -4,11 +4,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.*
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.os.IBinder
-import android.os.Message
-import android.os.Messenger
 import android.view.View
 import android.widget.TextView
 import com.learn.services.R
@@ -33,7 +30,7 @@ class MessengerActivity : AppCompatActivity() {
         }
 
 
-        setIntValueFromView(R.id.txvResult, result)
+
     }
 
     private fun createMessage(firstNumber:Int, secondNumber:Int) :Message {
@@ -44,6 +41,7 @@ class MessengerActivity : AppCompatActivity() {
         bundle.putInt(MyMessengerService.SECOND_NUMBER, secondNumber)
 
         messageToService.data = bundle
+        messageToService.replyTo = incomingMessenger  //this will be used by service to send data back
 
         return messageToService
     }
@@ -86,5 +84,24 @@ class MessengerActivity : AppCompatActivity() {
 
         }
 
+    }
+
+
+    //code for receiving data back from service
+    val incomingMessenger = Messenger(IncomingResponseHandler())
+    inner class IncomingResponseHandler : Handler() {
+        override fun handleMessage(msg: Message?) {
+
+            if(msg == null)
+                return
+            val bundle = msg.data
+            val result = bundle.getInt(MyMessengerService.RESULT, 0)
+            when(msg.what) {
+                MyMessengerService.RESULT_ACTION -> {
+                    setIntValueFromView(R.id.txvResult, result)
+                }
+                else -> super.handleMessage(msg)
+            }
+        }
     }
 }

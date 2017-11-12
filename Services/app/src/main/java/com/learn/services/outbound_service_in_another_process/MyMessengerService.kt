@@ -2,10 +2,7 @@ package com.learn.services.outbound_service_in_another_process
 
 import android.app.Service
 import android.content.Intent
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
-import android.os.Messenger
+import android.os.*
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.widget.Toast
@@ -16,7 +13,9 @@ class MyMessengerService : Service() {
     companion object {
         val FIRST_NUMBER = "MyMessengerService.FIRST_NUMBER"
         val SECOND_NUMBER = "MyMessengerService.SECOND_NUMBER"
+        val RESULT = "MyMessengerService.RESULT"
         val ADD_ACTION = 3
+        val RESULT_ACTION = 100
         private val TAG = MyMessengerService::class.java.name
     }
     override fun onBind(intent: Intent): IBinder? {
@@ -51,6 +50,14 @@ class MyMessengerService : Service() {
             }
 
             Log.i(TAG, "The result is $result")
+            val replyMessenger = msg.replyTo
+            val replyBundle = Bundle()
+            replyBundle.putInt(MyMessengerService.RESULT, result)
+            val replyMessage  = Message.obtain(null, MyMessengerService.RESULT_ACTION)
+            replyMessage.data = replyBundle
+            replyMessenger.send(replyMessage)
+
+
         }
     }
 }
