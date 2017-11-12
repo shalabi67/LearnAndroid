@@ -17,6 +17,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import com.learn.services.bind_service.CalculatorActivity
 import com.learn.services.intent_service.MyIntentService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -78,6 +79,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         intent.putExtra(MyStartedService.SLEEP_TIME, 10L)
         intent.putExtra(MyStartedService.RECEIVER, myResultReceiver)
         startService(intent)
+    }
+
+    fun boundServiceToActivity(view : View) {
+        val intent = Intent(this, CalculatorActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onBackPressed() {
