@@ -9,7 +9,6 @@ class MyStartedService : Service() {
     companion object {
         val TAG = "MyStartedService"
         val SLEEP_TIME = "MyStartedService.SLEEP_TIME"
-        val RECEIVER = "MyStartedService.RECEIVER"
     }
     override fun onBind(intent: Intent): IBinder? {
         Log.i(TAG, "onBind, Thread name = ${Thread.currentThread().name}")

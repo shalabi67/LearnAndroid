@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val myResultReceiver = MyResultReceiver(null)
 
         val intent = Intent(this, MyIntentService::class.java)
-        intent.putExtra(MyStartedService.SLEEP_TIME, 10L)
-        intent.putExtra(MyStartedService.RECEIVER, myResultReceiver)
+        intent.putExtra(MyIntentService.SLEEP_TIME, 12L)
+        intent.putExtra(MyIntentService.RECEIVER, myResultReceiver)
         startService(intent)
     }
 

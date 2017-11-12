@@ -13,12 +13,14 @@ class MyIntentService : IntentService("MyIntentServiceWorkerThread") {
         val TAG = MyIntentService::class.java.name
         val INTENT_RESULT = "MyIntentService.INTENT_RESULT"
         val OK_CODE = 1
+        val RECEIVER = "MyIntentService.RECEIVER"
+        val SLEEP_TIME = "MyIntentService.SLEEP_TIME"
     }
     override fun onHandleIntent(intent: Intent?) {
         Log.i(MyStartedService.TAG, "onHandleIntent, Thread name = ${Thread.currentThread().name}")
         if (intent != null) {
-            val sleepTime : Long = intent.getLongExtra(MyStartedService.SLEEP_TIME, 1) as Long
-            val myResultReceiver = intent.getParcelableExtra<ResultReceiver>(MyStartedService.RECEIVER)
+            val sleepTime : Long = intent.getLongExtra(MyIntentService.SLEEP_TIME, 1) as Long
+            val myResultReceiver = intent.getParcelableExtra<ResultReceiver>(MyIntentService.RECEIVER)
             for(i in 1..sleepTime) {
                 Log.i(TAG, "The value is $i, Thread name = ${Thread.currentThread().name}")
                 Thread.sleep( 1000)
