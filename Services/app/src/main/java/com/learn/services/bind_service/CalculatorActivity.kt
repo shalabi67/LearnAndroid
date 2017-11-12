@@ -12,8 +12,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.learn.services.R
-import kotlinx.android.synthetic.main.activity_second.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 
 class CalculatorActivity : AppCompatActivity() {
     companion object {
