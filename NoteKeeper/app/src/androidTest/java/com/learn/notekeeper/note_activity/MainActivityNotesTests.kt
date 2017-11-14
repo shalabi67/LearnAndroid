@@ -3,6 +3,7 @@ package com.learn.notekeeper.note_activity
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.contrib.DrawerActions
 import android.support.test.espresso.contrib.NavigationViewActions
 import android.support.test.espresso.contrib.RecyclerViewActions
@@ -14,6 +15,8 @@ import com.learn.notekeeper.NoteRecyclerAdapter
 import com.learn.notekeeper.R
 import com.learn.notekeeper.data.note.Note
 import com.learn.notekeeper.data.note.Notes
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,7 +45,8 @@ class MainActivityNotesTests {
         onView(withId(R.id.list_items)).perform(RecyclerViewActions.actionOnItemAtPosition<NoteRecyclerAdapter.ViewHolder>(noteIndex, click()))
 
         //verify the expected values
-        for(i in 0 .. (Notes.notes.size-1)) {
+        val notesNumber = Notes.notes.size-1
+        for(i in 0 .. notesNumber) {
             //get node
             val note = Notes.notes[i]
             onView(withId(R.id.spinner_courses)).check(
@@ -55,9 +59,13 @@ class MainActivityNotesTests {
                     ViewAssertions.matches(withText(note.noteText))
             )
 
-            //click on next
-            onView(withId(R.id.action_next_note)).perform(click())
+            //click on next and check is is enabled
+            if(i < notesNumber) {
+                onView(allOf(withId(R.id.action_next_note), isEnabled())).perform(click())
+            }
         }
+
+        onView(withId(R.id.action_next_note)).check(matches(not(isEnabled())))
     }
 
 }
