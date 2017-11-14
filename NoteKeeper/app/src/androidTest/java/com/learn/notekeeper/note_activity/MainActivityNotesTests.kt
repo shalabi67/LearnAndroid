@@ -41,23 +41,23 @@ class MainActivityNotesTests {
         //click on the first node on the recycle view.
         onView(withId(R.id.list_items)).perform(RecyclerViewActions.actionOnItemAtPosition<NoteRecyclerAdapter.ViewHolder>(noteIndex, click()))
 
-        //get node
-        val note = Notes.notes[noteIndex]
-
         //verify the expected values
-        onView(withId(R.id.spinner_courses)).check(
-                ViewAssertions.matches(withSpinnerText(note.course?.courseTitle))
-        )
-        onView(withId(R.id.text_note_title)).check(
-                ViewAssertions.matches(withText(note.noteTitle))
-        )
-        onView(withId(R.id.text_note_text)).check(
-                ViewAssertions.matches(withText(note.noteText))
-        )
+        for(i in 0 .. (Notes.notes.size-1)) {
+            //get node
+            val note = Notes.notes[i]
+            onView(withId(R.id.spinner_courses)).check(
+                    ViewAssertions.matches(withSpinnerText(note.course?.courseTitle))
+            )
+            onView(withId(R.id.text_note_title)).check(
+                    ViewAssertions.matches(withText(note.noteTitle))
+            )
+            onView(withId(R.id.text_note_text)).check(
+                    ViewAssertions.matches(withText(note.noteText))
+            )
+
+            //click on next
+            onView(withId(R.id.action_next_note)).perform(click())
+        }
     }
 
-    @Test
-    fun hello() {
-
-    }
 }
