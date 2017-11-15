@@ -62,7 +62,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun displayCourses() {
-        listRecyclerView.layoutManager = GridLayoutManager(this, 2)
+        listRecyclerView.layoutManager = GridLayoutManager(this,
+                resources.getInteger(R.integer.courses_columns_count))
         listRecyclerView.adapter = coursesRecyclerAdapter
 
         //check notes item of the navaigation
@@ -115,11 +116,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_notes -> {
                 displayNotes()
-                showMessage("notes clicked")
+                showMessage(R.string.nots_navigation_message)
             }
             R.id.nav_courses -> {
                 displayCourses()
-                showMessage("courses clicked")
+                showMessage(R.string.courses_navigation_message)
 
             }
             R.id.nav_share -> {
@@ -133,8 +134,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-    fun showMessage(message : String) {
+    fun showMessage(messageId : Int) {
         val view = findViewById<RecyclerView>(R.id.list_items)
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(view, messageId, Snackbar.LENGTH_LONG).show()
     }
 }
