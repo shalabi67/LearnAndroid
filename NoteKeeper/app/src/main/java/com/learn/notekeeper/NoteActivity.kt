@@ -26,6 +26,7 @@ class NoteActivity : AppCompatActivity() {
         val CAMERA_GET_IMAGE = 1
         val ORIGINAL_NOTE = "com.learn.notekeeper.ORIGINAL_NOTE"
         val TAG = javaClass.simpleName
+        val NEW_NOTE_POSITION = -1
     }
     lateinit private var spinner : Spinner
     lateinit private var titleView : TextView
@@ -34,6 +35,8 @@ class NoteActivity : AppCompatActivity() {
 
     lateinit private var note:Note
     lateinit private var oldNote:Note
+
+    var position : Int = NEW_NOTE_POSITION
 
 
     private var isSave = true
@@ -49,8 +52,8 @@ class NoteActivity : AppCompatActivity() {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = coursesAdapter
 
-        //readFromIntent(getNoteUsingExtra)
-        readFromIntent(getNoteUsingNotePosition)
+        //displayNote(getNoteUsingExtra)
+        displayNote(getNoteUsingNotePosition)
 
         if(savedInstanceState == null) {
             Log.d(TAG, "OnCreate savedInstanceState is null")
@@ -80,10 +83,10 @@ class NoteActivity : AppCompatActivity() {
         }
     }
 
-    private fun readFromIntent(getNote : () -> Note?) {
+    private fun displayNote(getNote : () -> Note?) {
         val note = getNote()
         if(note == null) {
-            Log.w(TAG, "readFromIntent note is null")
+            Log.w(TAG, "displayNote note is null")
             return;
         }
         this.note = note
@@ -102,9 +105,9 @@ class NoteActivity : AppCompatActivity() {
     }
     private val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
     private val getNoteUsingNotePosition : () -> Note? = {
-        val position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)
-        if(position == -1) {
-            val note: Note = Note(-1, "", "")
+        position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)
+        if(position == NEW_NOTE_POSITION) {
+            val note: Note = Note(NEW_NOTE_POSITION, "", "")
             note
         }
         else  {
@@ -127,6 +130,7 @@ class NoteActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_email_note -> sendEmail()
+            R.id.action_next_note -> moveToNextNode()
             R.id.action_cancel -> {
                 isSave = false
                 note.copyValues(oldNote)
@@ -139,6 +143,25 @@ class NoteActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun moveToNextNode(): Boolean {
+        //save exiting node
+        saveNote()
+
+        //get next node
+        ++position
+        note = Notes.notes.get(position)
+
+        //move to next node
+        saveOriginalNote()
+        displayNote({note})
+
+
+        //disable cancel menue if needed
+        invalidateOptionsMenu()
+        return true
+    }
+
     private fun sendEmail() : Boolean {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "message/rfc2822"
@@ -180,11 +203,15 @@ class NoteActivity : AppCompatActivity() {
         if(!isSave) {
             return
         }
+        saveNote()
+    }
+
+    private fun saveNote() {
         note.noteTitle = titleView.text.toString()
         note.noteText = textView.text.toString()
         note.course = spinner.selectedItem as Course
 
-        if(note.noteId == -1) {
+        if (note.noteId == -1) {
             Notes.addNote(note)
         }
     }
@@ -199,5 +226,11 @@ class NoteActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
 
         outState?.putParcelable(ORIGINAL_NOTE, oldNote)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val cancelItem = menu?.findItem(R.id.action_next_note)
+        cancelItem?.setEnabled(position < Notes.notes.size - 1)
+        return super.onPrepareOptionsMenu(menu)
     }
 }

@@ -7,7 +7,7 @@ import com.learn.notekeeper.data.course.Courses
  */
 object Notes {
     private var id : Int =0;
-    val notes = mutableListOf<Note>(Note(1, "note 1", "", Courses.getCourse(4)),
+    val notes = mutableListOf<Note>(
             Note(++id, "note 1", "", Courses.getCourse(4)),
             Note(++id, "note 2", "", Courses.getCourse(2)),
             Note(++id, "note 3", "", Courses.getCourse(4)),
