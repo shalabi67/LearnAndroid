@@ -61,5 +61,22 @@
         android:layout_height="wrap_content"
         android:text="Button color selector"
         android:textColor="@color/button_selector"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient"
+        android:text="Button gradiant selector" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Gradient"
+        android:textColor="#616161"
+        android:shadowColor="#5000"
+        android:shadowDx="10"
+        android:shadowDy="10"
+        android:shadowRadius="10"
+        android:textSize="30sp" />
 </LinearLayout>
 
