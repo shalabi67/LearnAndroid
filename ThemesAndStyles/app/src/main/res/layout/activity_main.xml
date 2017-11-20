@@ -46,5 +46,14 @@
         android:text="extra large light"
         style="@style/ExtraLargeLightTextView"
         />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:text="Selector Style"
+        android:textColor="@android:color/background_light"
+        />
 </LinearLayout>
 
