@@ -55,5 +55,11 @@
         android:text="Selector Style"
         android:textColor="@android:color/background_light"
         />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button color selector"
+        android:textColor="@color/button_selector"/>
 </LinearLayout>
 
