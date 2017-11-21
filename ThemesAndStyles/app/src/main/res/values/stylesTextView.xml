@@ -2,6 +2,7 @@
     <style name="ParentText">
         <item name="android:fontFamily">monospace</item>
         <item name="android:textColor">#616161</item>
+        <item name="android:textSize">15sp</item>
     </style>
     <style name="SmallTextView" parent="ParentText">
         <item name="android:textSize">12sp</item>
