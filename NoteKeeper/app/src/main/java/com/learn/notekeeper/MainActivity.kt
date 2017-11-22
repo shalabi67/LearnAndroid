@@ -14,8 +14,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.data.note.Notes
+import com.learn.notekeeper.datalayer.NotesKeeperDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit var noteRecyclerAdapter : NoteRecyclerAdapter
     lateinit var coursesRecyclerAdapter : CourseRecyclerAdapter
+    lateinit var databaseOperations : DatabaseOperations
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +57,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         listRecyclerView = findViewById<RecyclerView>(R.id.list_items)
 
+
+        val database = NotesKeeperDatabase.create(this)
+        databaseOperations = database.open()
+
         initRecycleAdapters()
 
         displayNotes()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        databaseOperations.close()
     }
 
     private fun displayNotes() {

@@ -1,14 +1,19 @@
 package com.learn.notekeeper.data.note
 
+import android.content.ContentValues
 import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
+import android.provider.BaseColumns
+import com.androidlibrary.database.Data
 import com.learn.notekeeper.data.course.Course
+import com.learn.notekeeper.datalayer.CoursesTable
+import com.learn.notekeeper.datalayer.NotesTable
 
 /**
  * Created by mohammad on 11/3/2017.
  */
-data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : Parcelable {
+data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : Parcelable, Data {
     var course : Course? = null
     var image : Bitmap? = null
     constructor( noteId : Int,  noteTitle:String,  noteText:String,  course : Course) : this(noteId, noteTitle, noteText) {
@@ -55,5 +60,15 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
         override fun newArray(size: Int): Array<Note?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun getContentValues(): ContentValues {
+        val contentValues = ContentValues()
+        contentValues.put(BaseColumns._ID, noteId)
+        contentValues.put(NotesTable.TITLE, noteTitle)
+        contentValues.put(NotesTable.DESCRIPTION, noteText)
+        contentValues.put(NotesTable.COURSE_ID, course?.courseId)
+
+        return contentValues
     }
 }
