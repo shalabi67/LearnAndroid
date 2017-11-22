@@ -26,6 +26,9 @@ class DatabaseOperations(val database: SQLiteDatabase) {
         return database.insert(table, nullColumnHack, values)
     }
 
+    fun query(table : Table) : Cursor {
+        return database.query(table.getName(), table.getTableColumns(), null, null, null, null, null)
+    }
     fun query(table: String, columns: Array<String>, selection: String, selectionArgs: Array<String>, groupBy: String, having: String, orderBy: String): Cursor {
         return database.query(table, columns, selection, selectionArgs, groupBy, having, orderBy)
     }

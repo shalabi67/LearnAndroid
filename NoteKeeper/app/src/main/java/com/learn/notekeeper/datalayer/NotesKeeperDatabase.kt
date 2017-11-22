@@ -15,6 +15,7 @@ class NotesKeeperDatabase : Database {
             val registryDatabase = NotesKeeperDatabase(context)
             registryDatabase.addTable(CoursesTable())
             registryDatabase.addTable(NotesTable())
+            registryDatabase.addTable(NotesView())
 
             return registryDatabase
         }

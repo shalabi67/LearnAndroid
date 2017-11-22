@@ -118,6 +118,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun initRecycleAdapters() {
+        Notes.getNotes(databaseOperations)
+        Courses.getCourses(databaseOperations)
+
         coursesRecyclerAdapter = CourseRecyclerAdapter(this, Courses.courses)
         noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.notes)
     }

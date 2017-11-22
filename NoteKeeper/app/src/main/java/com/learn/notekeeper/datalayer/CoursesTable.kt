@@ -16,7 +16,7 @@ import com.learn.notekeeper.data.course.Course
 class CoursesTable : Table {
     companion object {
         val tableName  = "courses"
-        val TITLE = "title"
+        val TITLE = "course_title"
         private val tableColumns = mutableListOf<Column>()
         fun getColumns() : List<Column> {
             if(tableColumns.size != 0) {

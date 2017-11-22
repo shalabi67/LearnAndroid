@@ -9,6 +9,7 @@ import com.androidlibrary.database.column.ColumnProperty
 import com.androidlibrary.database.column.ColumnPropertyBuilder
 import com.androidlibrary.database.column.ColumnTypeEnum
 import com.learn.notekeeper.data.course.Course
+import com.learn.notekeeper.data.note.Note
 
 /**
  * Created by mohammad on 11/22/2017.
@@ -16,7 +17,7 @@ import com.learn.notekeeper.data.course.Course
 class NotesTable : Table {
     companion object {
         val tableName  = "notes"
-        val TITLE = "title"
+        val TITLE = "notes_title"
         val DESCRIPTION = "description"
         val COURSE_ID = "course_id"
         private val tableColumns = mutableListOf<Column>()
@@ -53,9 +54,10 @@ class NotesTable : Table {
         tableName = NotesTable.tableName
     }
     override fun <T : Data> read(cursor: Cursor): T {
-        val course  = Course(cursor.getInt(0),
-                cursor.getString(1))
+        val note  = Note(cursor.getInt(0),
+                cursor.getString(1),
+                cursor.getString(2))
 
-        return course as T
+        return note as T
     }
 }

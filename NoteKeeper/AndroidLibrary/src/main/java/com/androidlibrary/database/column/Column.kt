@@ -4,7 +4,7 @@ package com.androidlibrary.database.column
 /**
  * Created by mohammad on 11/21/2017.
  */
-class Column(private val columnName: String, private val type: ColumnTypeEnum, private val properties: Array<ColumnProperty>) {
+open class Column(val columnName: String, val type: ColumnTypeEnum, val properties: Array<ColumnProperty>) {
 
     fun getColumns(columns: Array<Column>): Array<String> {
         val names = arrayOf<String>()
