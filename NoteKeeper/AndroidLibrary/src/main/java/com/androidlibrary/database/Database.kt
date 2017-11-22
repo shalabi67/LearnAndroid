@@ -29,12 +29,13 @@ abstract class Database {
                           version: Int) {
         var fullPath = name
 
+        /*
         if (Debugger.canLOG) {
             val file = context.getExternalFilesDir(null)
             if (file != null) {
                 fullPath = "${file.absolutePath}/${name}"
             }
-        }
+        }*/
         this.databaseName = fullPath
         this.databaseVersion = version
 
@@ -55,7 +56,10 @@ abstract class Database {
         for (table in tables) {
             table.create(databaseOperations)
         }
+
+        initDatabaseData(databaseOperations)
     }
+    abstract fun initDatabaseData( databaseOperations : DatabaseOperations)
 
     fun addUpgradeTable(table: Table?) {
         if (table == null)
@@ -70,7 +74,10 @@ abstract class Database {
         for (table in upgradeTables) {
             table.upgrade()
         }
+
+        initDatabaseUpgradeData(databaseOperations)
     }
+    abstract fun initDatabaseUpgradeData( databaseOperations : DatabaseOperations)
 
 
     fun open() : DatabaseOperations {
