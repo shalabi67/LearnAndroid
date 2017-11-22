@@ -47,6 +47,10 @@ abstract class Table : BaseColumns {
         return list
     }
 
+    open fun getColumnByName(columnName : String, table : Table? = null) : Column {
+        return columns.filter { col -> col.columnName.equals(columnName) }.first()
+    }
+
     abstract fun <T : Data> read(cursor: Cursor): T
 
 

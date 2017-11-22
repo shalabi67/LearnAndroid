@@ -27,6 +27,23 @@ abstract class View(val mainTable : Table) : Table() {
         val column = col as TableColumn
         return "${column.table.getName()}_${column.columnName}"
     }
+
+    override fun getColumnByName(columnName : String, table : Table?) : Column {
+        if(table == null) {
+            return columns.filter { col -> col.columnName ==columnName }.first()
+        } else {
+            return columns.filter { col -> isRequestedColumn(col, columnName, table)}.first()
+        }
+    }
+    private fun isRequestedColumn(column : Column, columnName : String, table : Table) : Boolean {
+        val tableColumn = column as TableColumn
+        if(tableColumn == null) {
+            return column.columnName ==columnName
+        } else {
+            return (column.columnName ==columnName) && (tableColumn.table.getName() == table.getName())
+        }
+    }
+
     private fun getJoinStatementsString() : String = joinStatements.joinToString(" ")
 
 

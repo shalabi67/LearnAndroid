@@ -2,6 +2,7 @@ package com.learn.notekeeper.data.note
 
 import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.course.Courses
+import com.learn.notekeeper.datalayer.CoursesTable
 import com.learn.notekeeper.datalayer.NotesTable
 import com.learn.notekeeper.datalayer.NotesView
 
@@ -33,7 +34,12 @@ object Notes {
     }
 
     fun getNotes(databaseOperations : DatabaseOperations) {
-        val cursor = databaseOperations.query(NotesView())
+        val notesView = NotesView()
+        val courseColumn = notesView.getColumnByName(CoursesTable.TITLE, CoursesTable())
+        val titleColumn = notesView.getColumnByName(NotesTable.TITLE, NotesTable())
+
+        val orderBy = "${notesView.getColumnNameForQuery(courseColumn)}, ${notesView.getColumnNameForQuery(titleColumn)}"
+        val cursor = databaseOperations.query(NotesView(), orderBy = orderBy)
         notes = NotesView().fill<Note>(cursor)
     }
 }
