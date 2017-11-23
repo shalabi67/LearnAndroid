@@ -19,6 +19,7 @@ class NoteListActivity : AppCompatActivity() {
     companion object {
         val NOTE = "com.learn.notekeeper.NOTE"
         val NOTE_POSITION = "com.learn.notekeeper.NOTE_POSITION"
+        val SELECTED_NOTE_ID = "com.learn.notekeeper.SELECTED_NOTE_ID"
     }
 
     lateinit var noteRecyclerAdapter : NoteRecyclerAdapter

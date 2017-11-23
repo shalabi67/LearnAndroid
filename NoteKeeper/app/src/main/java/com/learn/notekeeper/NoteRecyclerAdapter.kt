@@ -36,7 +36,8 @@ class NoteRecyclerAdapter : RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>
         }
         holder.courseView.text = note.course?.courseTitle
         holder.titleView.text = note.noteTitle
-        holder.currentPosition = position
+        //holder.currentPosition = position
+        holder.noteId = note.noteId
 
     }
 
@@ -52,7 +53,8 @@ class NoteRecyclerAdapter : RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>
     class ViewHolder : RecyclerView.ViewHolder {
         val titleView : TextView
         val courseView : TextView
-        var currentPosition : Int = -1
+        //var currentPosition : Int = -1
+        var noteId : Int = Note.NEW_NOTE_ID
         constructor(itemView : View) : super(itemView) {
             titleView = itemView.findViewById(R.id.text_title)
             courseView = itemView.findViewById(R.id.text_course)
@@ -62,7 +64,7 @@ class NoteRecyclerAdapter : RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>
 
         val itemViewClickListener : View.OnClickListener =   View.OnClickListener { view ->
             val intent: Intent = Intent(view.context, NoteActivity::class.java)
-            intent.putExtra(NoteListActivity.NOTE_POSITION, currentPosition)
+            intent.putExtra(NoteListActivity.SELECTED_NOTE_ID, noteId)
             view.context.startActivity(intent)
         }
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -14,10 +15,14 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.data.note.Note
 import com.learn.notekeeper.data.note.Notes
+import com.learn.notekeeper.datalayer.NotesKeeperDatabase
+import com.learn.notekeeper.datalayer.NotesTable
+import com.learn.notekeeper.datalayer.NotesView
 
 import kotlinx.android.synthetic.main.activity_note.*
 
@@ -27,6 +32,7 @@ class NoteActivity : AppCompatActivity() {
         val ORIGINAL_NOTE = "com.learn.notekeeper.ORIGINAL_NOTE"
         val TAG = javaClass.simpleName
         val NEW_NOTE_POSITION = -1
+
     }
     lateinit private var spinner : Spinner
     lateinit private var titleView : TextView
@@ -37,6 +43,8 @@ class NoteActivity : AppCompatActivity() {
     lateinit private var oldNote:Note
 
     var position : Int = NEW_NOTE_POSITION
+    var noteId : Int = Note.NEW_NOTE_ID
+    lateinit var databaseOperations : DatabaseOperations
 
 
     private var isSave = true
@@ -47,13 +55,16 @@ class NoteActivity : AppCompatActivity() {
 
         imageView = findViewById<ImageView>(R.id.imageview_image)
 
+        databaseOperations = NotesKeeperDatabase.create(this).openReadable()
+
         spinner = findViewById<Spinner>(R.id.spinner_courses)
         val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = coursesAdapter
 
         //displayNote(getNoteUsingExtra)
-        displayNote(getNoteUsingNotePosition)
+        //displayNote(getNoteUsingNotePosition)
+        displayNote(getNoteUsingNoteId)
 
         if(savedInstanceState == null) {
             Log.d(TAG, "OnCreate savedInstanceState is null")
@@ -64,6 +75,12 @@ class NoteActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        databaseOperations.close()
     }
 
     private fun restoreOriginalNote(savedInstanceState: Bundle?) {
@@ -104,7 +121,7 @@ class NoteActivity : AppCompatActivity() {
         spinnerView.setSelection(index)
     }
     private val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
-    private val getNoteUsingNotePosition : () -> Note? = {
+    /*private val getNoteUsingNotePosition : () -> Note? = {
         position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)
         if(position == NEW_NOTE_POSITION) {
             val note: Note = Note(NEW_NOTE_POSITION, "", "")
@@ -112,6 +129,18 @@ class NoteActivity : AppCompatActivity() {
         }
         else  {
             val note: Note = Notes.notes[position]
+            note
+        }
+
+    }*/
+    private val getNoteUsingNoteId : () -> Note? = {
+        noteId = intent.getIntExtra(NoteListActivity.SELECTED_NOTE_ID, Note.NEW_NOTE_ID)
+        if(noteId == Note.NEW_NOTE_ID) {
+            val note: Note = Note(Note.NEW_NOTE_ID, "", "")
+            note
+        }
+        else  {
+            val note: Note = Notes.getNoteById(databaseOperations, noteId)
             note
         }
 

@@ -1,5 +1,7 @@
 package com.learn.notekeeper.data.note
 
+import android.provider.BaseColumns
+import android.util.Log
 import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.datalayer.CoursesTable
@@ -10,6 +12,7 @@ import com.learn.notekeeper.datalayer.NotesView
  * Created by mohammad on 11/3/2017.
  */
 object Notes {
+    val TAG = Notes::class.java.name
     private var id : Int =0;
     /*
     val notes = mutableListOf<Note>(
@@ -38,8 +41,25 @@ object Notes {
         val courseColumn = notesView.getColumnByName(CoursesTable.TITLE, CoursesTable())
         val titleColumn = notesView.getColumnByName(NotesTable.TITLE, NotesTable())
 
-        val orderBy = "${notesView.getColumnNameForQuery(courseColumn)}, ${notesView.getColumnNameForQuery(titleColumn)}"
+        val orderBy = "${courseColumn.getColumnNameForQuery()}, ${titleColumn.getColumnNameForQuery()}"
         val cursor = databaseOperations.query(NotesView(), orderBy = orderBy)
         notes = NotesView().fill<Note>(cursor)
+    }
+
+    fun getNoteById(databaseOperations : DatabaseOperations, noteId : Int) : Note {
+        val notesView = NotesView()
+        val noteIdColumnName = notesView.getColumnByName(BaseColumns._ID, NotesTable())
+        val selectionCriteria = "${noteIdColumnName.getColumnNameForQuery()} = ?"
+        val selectionParameters : Array<String> = arrayOf(noteId.toString())
+
+        val cursor = databaseOperations.query(notesView, selectionCriteria, selectionParameters)
+        val notes = notesView.fill<Note>(cursor)
+        if(notes.size > 1) {
+            Log.e(TAG, "getNoteById found incorrect number of nodes for id: $noteId")
+        } else if(notes.size == 0) {
+            Log.e(TAG, "getNoteById found no node with id: $noteId")
+            return Note.getEmptyNote()
+        }
+        return notes[0]
     }
 }
