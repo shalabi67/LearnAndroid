@@ -5,6 +5,11 @@ package com.androidlibrary.database.column
  * Created by mohammad on 11/21/2017.
  */
 open class Column(val columnName: String, val type: ColumnTypeEnum, val properties: Array<ColumnProperty>) {
+    companion object {
+        fun getInvalidColumn() : Column {
+            return Column("", ColumnTypeEnum.Invalid, ColumnPropertyBuilder().build())
+        }
+    }
 
     fun getColumns(columns: Array<Column>): Array<String> {
         val names = arrayOf<String>()
@@ -40,4 +45,6 @@ open class Column(val columnName: String, val type: ColumnTypeEnum, val properti
         }
         return s
     }
+
+    open fun getColumnNameForQuery() : String  =  columnName
 }

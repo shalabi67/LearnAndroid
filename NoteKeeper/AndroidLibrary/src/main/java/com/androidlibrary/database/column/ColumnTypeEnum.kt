@@ -8,5 +8,7 @@ enum class ColumnTypeEnum {
     Text,
     Blob,
     Decimal,
-    DateTime
+    DateTime,
+
+    Invalid  //used to specify an invalid column for error cases
 }

@@ -1,6 +1,8 @@
 package com.androidlibrary.database
 
+import android.util.Log
 import com.androidlibrary.database.column.Column
+import com.androidlibrary.database.column.ColumnTypeEnum
 import com.androidlibrary.database.column.TableColumn
 
 /**
@@ -8,6 +10,7 @@ import com.androidlibrary.database.column.TableColumn
  */
 abstract class View(val mainTable : Table) : Table() {
     companion object {
+        val TAG = View::class.java.name
         fun addColumns(list : MutableList<Column>, table : Table, columns : List<Column>) {
             for(column in columns) {
                 list.add(TableColumn(table, column))
@@ -19,21 +22,28 @@ abstract class View(val mainTable : Table) : Table() {
         val function: (column:Column) -> String = {c -> getColumnName(c)}
         return "CREATE VIEW $tableName AS SELECT ${getColumnsString(function)} FROM ${mainTable.getName()} ${getJoinStatementsString()} "
     }
-    fun getColumnName(col : Column) : String {
+    private fun getColumnName(col : Column) : String {
         val column = col as TableColumn
         return "${column.table.getName()}.${column.columnName} AS ${column.table.getName()}_${column.columnName}"
     }
-    override fun getColumnNameForQuery(col : Column) : String {
+
+    /*override fun getColumnNameForQuery(col : Column) : String {
         val column = col as TableColumn
         return "${column.table.getName()}_${column.columnName}"
-    }
+    }*/
 
     override fun getColumnByName(columnName : String, table : Table?) : Column {
         if(table == null) {
-            return columns.filter { col -> col.columnName ==columnName }.first()
-        } else {
-            return columns.filter { col -> isRequestedColumn(col, columnName, table)}.first()
+            return super.getColumnByName(columnName, table)
         }
+
+        val columnList = columns.filter({ col -> isRequestedColumn(col, columnName, table)})
+        if(columnList.isEmpty()) {
+            Log.e(TAG, "getColumnByName return empty list for $columnName and ${table?.getName()}")
+            return TableColumn(table, Column.getInvalidColumn())
+        }
+
+        return columnList[0]
     }
     private fun isRequestedColumn(column : Column, columnName : String, table : Table) : Boolean {
         val tableColumn = column as TableColumn
