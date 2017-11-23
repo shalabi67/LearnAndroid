@@ -1,7 +1,10 @@
 package com.learn.notekeeper
 
 import android.app.Activity
+import android.content.CursorLoader
 import android.content.Intent
+import android.content.Loader
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.BaseColumns
@@ -13,9 +16,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import com.androidlibrary.database.DatabaseOperations
+import com.androidlibrary.ui.loader.DataFeeder
+import com.androidlibrary.ui.loader.DataLoader
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.data.note.Note
+import com.learn.notekeeper.data.note.NoteLoader
 import com.learn.notekeeper.data.note.Notes
 import com.learn.notekeeper.datalayer.CoursesTable
 import com.learn.notekeeper.datalayer.NotesKeeperDatabase
@@ -24,7 +30,9 @@ import com.learn.notekeeper.datalayer.NotesView
 
 import kotlinx.android.synthetic.main.activity_note.*
 
-class NoteActivity : AppCompatActivity() {
+class NoteActivity : AppCompatActivity(), DataFeeder {
+
+
     companion object {
         val CAMERA_GET_IMAGE = 1
         val ORIGINAL_NOTE = "com.learn.notekeeper.ORIGINAL_NOTE"
@@ -61,19 +69,45 @@ class NoteActivity : AppCompatActivity() {
         //val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
         displayCourses()
 
+        noteId = intent.getIntExtra(NoteListActivity.SELECTED_NOTE_ID, Note.NEW_NOTE_ID)
+        if(noteId != Note.NEW_NOTE_ID) {
+            loaderManager.initLoader(NoteLoader.ID, null, NoteLoader(noteId, this, databaseOperations))
+        }
+
         //displayNote(getNoteUsingExtra)
         //displayNote(getNoteUsingNotePosition)
-        displayNote(getNoteUsingNoteId)
+        //displayNote(getNoteUsingNoteId)
 
-        if(savedInstanceState == null) {
-            Log.d(TAG, "OnCreate savedInstanceState is null")
-            saveOriginalNote()
-        } else {
+
+        if(savedInstanceState != null) {
             Log.d(TAG, "OnCreate savedInstanceState not null")
             restoreOriginalNote(savedInstanceState)
         }
 
 
+
+    }
+    override fun fillData(cursor : Cursor) {
+        note = NotesView().read<Note>(cursor)
+
+        displayNote()
+
+        saveOriginalNote()
+    }
+
+    private fun displayNote() {
+        titleView = findViewById<TextView>(R.id.text_note_title)
+        titleView.text = note.noteTitle
+
+        textView = findViewById<TextView>(R.id.text_note_text)
+        textView.text = note.noteText
+
+        imageView.setImageBitmap(note.image)
+
+        val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
+        //val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
+        val index = getCourseIndex(note.course?.courseTitle)
+        spinnerView.setSelection(index)
     }
 
     private fun displayCourses() {
@@ -118,18 +152,7 @@ class NoteActivity : AppCompatActivity() {
         }
         this.note = note
 
-        titleView = findViewById<TextView>(R.id.text_note_title)
-        titleView.text = note.noteTitle
-
-        textView = findViewById<TextView>(R.id.text_note_text)
-        textView.text = note.noteText
-
-        imageView.setImageBitmap(note.image)
-
-        val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
-        //val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
-        val index = getCourseIndex(note.course?.courseTitle)
-        spinnerView.setSelection(index)
+        displayNote()
     }
 
     private fun getCourseIndex(courseTitle: String?): Int {
@@ -169,7 +192,7 @@ class NoteActivity : AppCompatActivity() {
 
     }*/
     private val getNoteUsingNoteId : () -> Note? = {
-        noteId = intent.getIntExtra(NoteListActivity.SELECTED_NOTE_ID, Note.NEW_NOTE_ID)
+
         if(noteId == Note.NEW_NOTE_ID) {
             val note: Note = Note(Note.NEW_NOTE_ID, "", "")
             note
@@ -197,7 +220,7 @@ class NoteActivity : AppCompatActivity() {
             R.id.action_next_note -> moveToNextNode()
             R.id.action_cancel -> {
                 isSave = false
-                note.copyValues(oldNote)
+                //note.copyValues(oldNote)
 
                 finish()
                 true

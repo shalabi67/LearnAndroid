@@ -52,13 +52,8 @@ object Notes {
     }
 
     fun getNoteById(databaseOperations : DatabaseOperations, noteId : Int) : Note {
-        val notesView = NotesView()
-        val noteIdColumnName = notesView.getColumnByName(BaseColumns._ID, NotesTable())
-        val selectionCriteria = "${noteIdColumnName.getColumnNameForQuery()} = ?"
-        val selectionParameters : Array<String> = arrayOf(noteId.toString())
-
-        val cursor = databaseOperations.query(notesView, selectionCriteria, selectionParameters)
-        val notes = notesView.fill<Note>(cursor)
+        val cursor = getNotesByIdCursor(noteId, databaseOperations)
+        val notes = NotesView().fill<Note>(cursor)
         if(notes.size > 1) {
             Log.e(TAG, "getNoteById found incorrect number of nodes for id: $noteId")
         } else if(notes.size == 0) {
@@ -66,5 +61,14 @@ object Notes {
             return Note.getEmptyNote()
         }
         return notes[0]
+    }
+
+    fun getNotesByIdCursor(noteId: Int, databaseOperations: DatabaseOperations): Cursor {
+        val notesView = NotesView()
+        val noteIdColumnName = notesView.getColumnByName(BaseColumns._ID, NotesTable())
+        val selectionCriteria = "${noteIdColumnName.getColumnNameForQuery()} = ?"
+        val selectionParameters: Array<String> = arrayOf(noteId.toString())
+
+        return databaseOperations.query(notesView, selectionCriteria, selectionParameters)
     }
 }
