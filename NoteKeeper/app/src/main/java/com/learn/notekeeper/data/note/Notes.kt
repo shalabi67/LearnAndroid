@@ -1,5 +1,6 @@
 package com.learn.notekeeper.data.note
 
+import android.database.Cursor
 import android.provider.BaseColumns
 import android.util.Log
 import com.androidlibrary.database.DatabaseOperations
@@ -37,13 +38,17 @@ object Notes {
     }
 
     fun getNotes(databaseOperations : DatabaseOperations) {
+        val cursor = getNotesCursor(databaseOperations)
+        notes = NotesView().fill<Note>(cursor)
+    }
+
+    fun getNotesCursor(databaseOperations: DatabaseOperations): Cursor {
         val notesView = NotesView()
         val courseColumn = notesView.getColumnByName(CoursesTable.TITLE, CoursesTable())
         val titleColumn = notesView.getColumnByName(NotesTable.TITLE, NotesTable())
 
         val orderBy = "${courseColumn.getColumnNameForQuery()}, ${titleColumn.getColumnNameForQuery()}"
-        val cursor = databaseOperations.query(NotesView(), orderBy = orderBy)
-        notes = NotesView().fill<Note>(cursor)
+        return databaseOperations.query(NotesView(), orderBy = orderBy)
     }
 
     fun getNoteById(databaseOperations : DatabaseOperations, noteId : Int) : Note {

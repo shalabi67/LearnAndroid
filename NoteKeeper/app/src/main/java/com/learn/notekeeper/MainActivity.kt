@@ -61,9 +61,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val database = NotesKeeperDatabase.create(this)
         databaseOperations = database.open()
 
-        initRecycleAdapters()
+        //initRecycleAdapters()
 
-        displayNotes()
+        //displayNotes()
     }
 
     override fun onDestroy() {
@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // initNotesList()
         //noteRecyclerAdapter.notifyDataSetChanged()
+        initRecycleAdapters()
         displayNotes()
         updateNavigationHeader()
     }
@@ -118,11 +119,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun initRecycleAdapters() {
-        Notes.getNotes(databaseOperations)
-        Courses.getCourses(databaseOperations)
+        //Notes.getNotes(databaseOperations)
+        //Courses.getCourses(databaseOperations)
 
-        coursesRecyclerAdapter = CourseRecyclerAdapter(this, Courses.courses)
-        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.notes)
+        coursesRecyclerAdapter = CourseRecyclerAdapter(this, Courses.getCoursesCursor(databaseOperations))
+        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.getNotesCursor(databaseOperations))
     }
 
     override fun onBackPressed() {

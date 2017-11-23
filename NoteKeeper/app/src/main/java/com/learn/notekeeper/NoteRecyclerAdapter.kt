@@ -2,6 +2,7 @@ package com.learn.notekeeper
 
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,15 +21,31 @@ class NoteRecyclerAdapter : RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>
     }
     val context : Context
     val layoutInflater : LayoutInflater
-    val notes : List<Note>
+    //val notes : List<Note>
+    var cursor : Cursor
 
-    constructor( context : Context, notes : List<Note>) {
+    constructor( context : Context, cursor : Cursor/*notes : List<Note>*/) {
         this.context = context
         layoutInflater = LayoutInflater.from(context)
-        this.notes = notes
+        //this.notes = notes
+        this.cursor = cursor
+        populateColumnPositions()
+    }
+    private fun populateColumnPositions() {
+
+    }
+    private fun changeCursor(cursor : Cursor) {
+        this.cursor.close()
+        this.cursor = cursor
+
+        populateColumnPositions()
+        notifyDataSetChanged()
     }
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        val note = notes.get(position)
+        cursor.moveToPosition(position)
+
+        //val note = notes.get(position)
+        val note = Note.create(cursor)
 
         if(holder == null) {
             Log.w(TAG, "onBindViewHolder viewHolder is null")
@@ -47,7 +64,8 @@ class NoteRecyclerAdapter : RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>
     }
 
     override fun getItemCount(): Int {
-       return notes.size
+       //return notes.size
+        return cursor.count
     }
 
     class ViewHolder : RecyclerView.ViewHolder {

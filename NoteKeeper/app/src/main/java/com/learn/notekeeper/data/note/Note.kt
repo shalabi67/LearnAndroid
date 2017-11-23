@@ -1,6 +1,7 @@
 package com.learn.notekeeper.data.note
 
 import android.content.ContentValues
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
@@ -9,6 +10,7 @@ import com.androidlibrary.database.Data
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.datalayer.CoursesTable
 import com.learn.notekeeper.datalayer.NotesTable
+import com.learn.notekeeper.datalayer.NotesView
 
 /**
  * Created by mohammad on 11/3/2017.
@@ -19,6 +21,9 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
         fun getEmptyNote() : Note {
             return Note(NEW_NOTE_ID, "", "")
         }
+
+        fun create(cursor : Cursor) : Note = NotesView().read<Note>(cursor)
+
 
         var CREATOR: Parcelable.Creator<Note> = object : Parcelable.Creator<Note> {
             override fun createFromParcel(parcel: Parcel): Note {
@@ -35,6 +40,10 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
     constructor( noteId : Int,  noteTitle:String,  noteText:String,  course : Course) : this(noteId, noteTitle, noteText) {
         this.course = course
     }
+    constructor() : this(0, "", "") {
+
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString(),
