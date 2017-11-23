@@ -11,15 +11,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.data.note.Note
 import com.learn.notekeeper.data.note.Notes
+import com.learn.notekeeper.datalayer.CoursesTable
 import com.learn.notekeeper.datalayer.NotesKeeperDatabase
 import com.learn.notekeeper.datalayer.NotesTable
 import com.learn.notekeeper.datalayer.NotesView
@@ -46,6 +44,8 @@ class NoteActivity : AppCompatActivity() {
     var noteId : Int = Note.NEW_NOTE_ID
     lateinit var databaseOperations : DatabaseOperations
 
+    private lateinit var coursesAdapter: SimpleCursorAdapter
+
 
     private var isSave = true
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +58,8 @@ class NoteActivity : AppCompatActivity() {
         databaseOperations = NotesKeeperDatabase.create(this).openReadable()
 
         spinner = findViewById<Spinner>(R.id.spinner_courses)
-        val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
-        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = coursesAdapter
+        //val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
+        displayCourses()
 
         //displayNote(getNoteUsingExtra)
         //displayNote(getNoteUsingNotePosition)
@@ -75,6 +74,17 @@ class NoteActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun displayCourses() {
+         coursesAdapter = SimpleCursorAdapter(this,
+                android.R.layout.simple_spinner_item,
+                Courses.getCoursesCursor(databaseOperations),
+                arrayOf(CoursesTable.TITLE),
+                intArrayOf(android.R.id.text1),
+                0)
+        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = coursesAdapter
     }
 
     override fun onDestroy() {
@@ -117,9 +127,34 @@ class NoteActivity : AppCompatActivity() {
         imageView.setImageBitmap(note.image)
 
         val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
-        val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
+        //val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
+        val index = getCourseIndex(note.course?.courseTitle)
         spinnerView.setSelection(index)
     }
+
+    private fun getCourseIndex(courseTitle: String?): Int {
+        if(courseTitle == null) {
+            Log.e(TAG, "getCourseIndex note has no course attached to it.")
+            return 0
+        }
+
+        val cursor = coursesAdapter.cursor
+        var flag = cursor.moveToFirst()
+        var position = 0
+        val titleColumnIndex = cursor.getColumnIndex(CoursesTable.TITLE)
+        while(flag) {
+            val title = cursor.getString(titleColumnIndex)
+            if(title == courseTitle)
+                return position
+
+            position++
+            flag = cursor.moveToNext()
+        }
+
+        Log.e(TAG, "getCourseIndex could not find title: $courseTitle")
+        return 0
+    }
+
     private val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}
     /*private val getNoteUsingNotePosition : () -> Note? = {
         position = intent.getIntExtra(NoteListActivity.NOTE_POSITION, -1)

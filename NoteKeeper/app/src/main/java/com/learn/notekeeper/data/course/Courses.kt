@@ -1,6 +1,6 @@
 package com.learn.notekeeper.data.course
 
-import android.content.Context
+import android.database.Cursor
 import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.datalayer.CoursesTable
 
@@ -19,7 +19,11 @@ object Courses {
     fun getCourse(courseId:Int) : Course = courses.filter { course-> course.courseId == courseId }.first()
 
     fun getCourses(databaseOperations : DatabaseOperations) {
-        val cursor = databaseOperations.query(CoursesTable())
+        val cursor = getCoursesCursor(databaseOperations)
         courses = CoursesTable().fill(cursor)
+    }
+    fun getCoursesCursor(databaseOperations : DatabaseOperations) : Cursor {
+        val orderBy = "${CoursesTable.TITLE}"
+        return databaseOperations.query(CoursesTable(), orderBy = orderBy)
     }
 }
