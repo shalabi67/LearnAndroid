@@ -20,6 +20,7 @@ import com.androidlibrary.ui.loader.DataFeeder
 import com.androidlibrary.ui.loader.DataLoader
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
+import com.learn.notekeeper.data.course.CoursesLoader
 import com.learn.notekeeper.data.note.Note
 import com.learn.notekeeper.data.note.NoteLoader
 import com.learn.notekeeper.data.note.Notes
@@ -67,7 +68,8 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
 
         spinner = findViewById<Spinner>(R.id.spinner_courses)
         //val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
-        displayCourses()
+        displayCourses(null)
+        loaderManager.initLoader(CoursesLoader.ID, null, CoursesLoader(this, databaseOperations))
 
         noteId = intent.getIntExtra(NoteListActivity.SELECTED_NOTE_ID, Note.NEW_NOTE_ID)
         if(noteId != Note.NEW_NOTE_ID) {
@@ -87,12 +89,22 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
 
 
     }
-    override fun fillData(cursor : Cursor) {
-        note = NotesView().read<Note>(cursor)
+    var noteDataLoaded = false
+    var coursesDataLoaded = false
+    override fun fillData(loaderId : Int, cursor : Cursor) {
+        if(loaderId == NoteLoader.ID) {
+            note = NotesView().read<Note>(cursor)
+            noteDataLoaded = true
 
-        displayNote()
+            saveOriginalNote()
+        } else if(loaderId == CoursesLoader.ID) {
+            coursesAdapter.changeCursor(cursor)
+            coursesDataLoaded = true
 
-        saveOriginalNote()
+        }
+        if(noteDataLoaded && coursesDataLoaded) {
+            displayNote()
+        }
     }
 
     private fun displayNote() {
@@ -107,13 +119,17 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
         val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
         //val index = Courses.courses.indexOfFirst { course -> course.courseTitle == note.course?.courseTitle }
         val index = getCourseIndex(note.course?.courseTitle)
+        if(index < 0) {
+            Log.e(TAG, "displayNote could not find course")
+            return
+        }
         spinnerView.setSelection(index)
     }
 
-    private fun displayCourses() {
+    private fun displayCourses(cursor : Cursor?) {
          coursesAdapter = SimpleCursorAdapter(this,
                 android.R.layout.simple_spinner_item,
-                Courses.getCoursesCursor(databaseOperations),
+                 cursor,
                 arrayOf(CoursesTable.TITLE),
                 intArrayOf(android.R.id.text1),
                 0)
@@ -124,6 +140,7 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
     override fun onDestroy() {
         super.onDestroy()
 
+        coursesAdapter.changeCursor(null)
         databaseOperations.close()
     }
 
@@ -158,10 +175,12 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
     private fun getCourseIndex(courseTitle: String?): Int {
         if(courseTitle == null) {
             Log.e(TAG, "getCourseIndex note has no course attached to it.")
-            return 0
+            return -1
         }
 
         val cursor = coursesAdapter.cursor
+        if(cursor == null)
+            return -1
         var flag = cursor.moveToFirst()
         var position = 0
         val titleColumnIndex = cursor.getColumnIndex(CoursesTable.TITLE)
@@ -175,7 +194,7 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
         }
 
         Log.e(TAG, "getCourseIndex could not find title: $courseTitle")
-        return 0
+        return -1
     }
 
     private val getNoteUsingExtra : () -> Note? = { intent.getParcelableExtra<Note>(NoteListActivity.NOTE)}

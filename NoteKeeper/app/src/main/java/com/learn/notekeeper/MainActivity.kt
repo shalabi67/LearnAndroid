@@ -1,6 +1,7 @@
 package com.learn.notekeeper
 
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
@@ -15,13 +16,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import com.androidlibrary.database.DatabaseOperations
+import com.androidlibrary.ui.loader.DataFeeder
 import com.learn.notekeeper.data.course.Courses
+import com.learn.notekeeper.data.course.CoursesLoader
 import com.learn.notekeeper.data.note.Notes
+import com.learn.notekeeper.data.note.NotesLoader
 import com.learn.notekeeper.datalayer.NotesKeeperDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, DataFeeder {
+
+
     companion object {
         val NOTE = "com.learn.notekeeper.NOTE"
         val NOTE_POSITION = "com.learn.notekeeper.NOTE_POSITION"
@@ -59,7 +65,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         val database = NotesKeeperDatabase.create(this)
-        databaseOperations = database.open()
+        databaseOperations = database.openReadable()
 
         //initRecycleAdapters()
 
@@ -99,9 +105,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // initNotesList()
         //noteRecyclerAdapter.notifyDataSetChanged()
-        initRecycleAdapters()
-        displayNotes()
+        //initRecycleAdapters()
+        //displayNotes()
+
+
+        loaderManager.restartLoader(NotesLoader.ID, null, NotesLoader(this, databaseOperations))
         updateNavigationHeader()
+    }
+    override fun fillData(loaderId: Int, cursor: Cursor) {
+        if(loaderId == CoursesLoader.ID) {
+            coursesRecyclerAdapter = CourseRecyclerAdapter(this, cursor)
+            displayCourses()
+        }
+        else if(loaderId == NotesLoader.ID) {
+            noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.getNotesCursor(databaseOperations))
+            displayNotes()
+        }
+
+
     }
 
     private fun updateNavigationHeader() {
@@ -157,11 +178,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_notes -> {
-                displayNotes()
+                loaderManager.restartLoader(NotesLoader.ID, null, NotesLoader(this, databaseOperations))
                 showMessage(R.string.nots_navigation_message)
             }
             R.id.nav_courses -> {
-                displayCourses()
+                loaderManager.restartLoader(CoursesLoader.ID, null, CoursesLoader(this, databaseOperations))
                 showMessage(R.string.courses_navigation_message)
 
             }
