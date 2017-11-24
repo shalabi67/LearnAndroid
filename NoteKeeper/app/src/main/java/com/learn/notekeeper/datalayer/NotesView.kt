@@ -6,10 +6,7 @@ import com.androidlibrary.database.Data
 import com.androidlibrary.database.InnerJoin
 import com.androidlibrary.database.Table
 import com.androidlibrary.database.View
-import com.androidlibrary.database.column.Column
-import com.androidlibrary.database.column.ColumnProperty
-import com.androidlibrary.database.column.ColumnPropertyBuilder
-import com.androidlibrary.database.column.ColumnTypeEnum
+import com.androidlibrary.database.column.*
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.note.Note
 
@@ -21,8 +18,8 @@ import com.learn.notekeeper.data.note.Note
 class NotesView : View(NotesTable()) {
     companion object {
         val viewName  = "notesView"
-        private val viewColumns = mutableListOf<Column>()
-        fun getColumns() : List<Column> {
+        private val viewColumns = Columns()
+        fun getColumns() : Columns {
             if(viewColumns.size != 0) {
                 return viewColumns
             }

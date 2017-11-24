@@ -2,15 +2,12 @@ package com.androidlibrary.database.registry
 
 import android.content.Context
 import com.androidlibrary.database.Database
+import com.androidlibrary.database.DatabaseOperations
 
 /**
  * Created by mohammad on 11/22/2017.
  */
 class RegistryDatabase : Database {
-    protected constructor(context: Context) :
-            super(context, RegistryDatabase.databaseName, null,  RegistryDatabase.databaseVersion) {
-
-    }
 
     companion object {
         val databaseName = "registry.db"
@@ -21,5 +18,18 @@ class RegistryDatabase : Database {
 
             return registryDatabase
         }
+    }
+
+    protected constructor(context: Context) :
+            super(context, RegistryDatabase.databaseName, null,  RegistryDatabase.databaseVersion) {
+
+    }
+
+    override fun initDatabaseData(databaseOperations: DatabaseOperations) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun initDatabaseUpgradeData(databaseOperations: DatabaseOperations) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

@@ -4,10 +4,7 @@ import android.database.Cursor
 import android.provider.BaseColumns
 import com.androidlibrary.database.Data
 import com.androidlibrary.database.Table
-import com.androidlibrary.database.column.Column
-import com.androidlibrary.database.column.ColumnProperty
-import com.androidlibrary.database.column.ColumnPropertyBuilder
-import com.androidlibrary.database.column.ColumnTypeEnum
+import com.androidlibrary.database.column.*
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.note.Note
 
@@ -20,8 +17,8 @@ class NotesTable : Table {
         val TITLE = "notes_title"
         val DESCRIPTION = "description"
         val COURSE_ID = "course_id"
-        private val tableColumns = mutableListOf<Column>()
-        fun getColumns() : List<Column> {
+        private val tableColumns = Columns()
+        fun getColumns() : Columns {
             if(tableColumns.size != 0) {
                 return tableColumns
             }

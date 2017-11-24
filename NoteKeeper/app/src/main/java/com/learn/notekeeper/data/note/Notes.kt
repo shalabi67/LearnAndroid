@@ -44,8 +44,8 @@ object Notes {
 
     fun getNotesCursor(databaseOperations: DatabaseOperations): Cursor {
         val notesView = NotesView()
-        val courseColumn = notesView.getColumnByName(CoursesTable.TITLE, CoursesTable())
-        val titleColumn = notesView.getColumnByName(NotesTable.TITLE, NotesTable())
+        val courseColumn = notesView.columns.getColumnByName(CoursesTable.TITLE, CoursesTable())
+        val titleColumn = notesView.columns.getColumnByName(NotesTable.TITLE, NotesTable())
 
         val orderBy = "${courseColumn.getColumnNameForQuery()}, ${titleColumn.getColumnNameForQuery()}"
         return databaseOperations.query(NotesView(), orderBy = orderBy)
@@ -65,7 +65,7 @@ object Notes {
 
     fun getNotesByIdCursor(noteId: Int, databaseOperations: DatabaseOperations): Cursor {
         val notesView = NotesView()
-        val noteIdColumnName = notesView.getColumnByName(BaseColumns._ID, NotesTable())
+        val noteIdColumnName = notesView.columns.getColumnByName(BaseColumns._ID, NotesTable())
         val selectionCriteria = "${noteIdColumnName.getColumnNameForQuery()} = ?"
         val selectionParameters: Array<String> = arrayOf(noteId.toString())
 

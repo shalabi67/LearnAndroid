@@ -21,6 +21,11 @@ open class Column(val columnName: String, val type: ColumnTypeEnum, val properti
         return names
     }
 
+    fun isPrimaryKey() : Boolean {
+        val result = properties.find { property -> property.columnPropertyEnum == ColumnPropertyEnum.PrimaryKey }
+        return result != null
+    }
+
     override fun toString(): String {
         return columnName + " " + getColumnType() + " " + getColumnProperties()
     }

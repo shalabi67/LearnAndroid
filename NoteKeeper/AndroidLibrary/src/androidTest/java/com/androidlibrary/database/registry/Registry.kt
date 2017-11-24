@@ -2,10 +2,7 @@ package com.androidlibrary.database.registry
 
 import android.database.Cursor
 import com.androidlibrary.database.*
-import com.androidlibrary.database.column.Column
-import com.androidlibrary.database.column.ColumnProperty
-import com.androidlibrary.database.column.ColumnPropertyBuilder
-import com.androidlibrary.database.column.ColumnTypeEnum
+import com.androidlibrary.database.column.*
 
 /**
  * Created by mohammad on 11/22/2017.
@@ -16,8 +13,8 @@ class Registry : Table {
         val KEY = "key"
         val VALUE = "value"
         val TYPE = "type"
-        private val tableColumns = mutableListOf<Column>()
-        fun getColumns() : List<Column> {
+        private val tableColumns = Columns()
+        fun getColumns() : Columns {
             if(tableColumns.size != 0) {
                 return tableColumns
             }
