@@ -16,6 +16,7 @@ import com.learn.notekeeper.datalayer.NotesView
  * Created by mohammad on 11/3/2017.
  */
 data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : Parcelable, Data {
+
     companion object {
         val NEW_NOTE_ID = 0
         fun getEmptyNote() : Note {
@@ -87,4 +88,5 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
 
         return contentValues
     }
+    override fun getPrimaryKey(): String = noteId.toString()
 }

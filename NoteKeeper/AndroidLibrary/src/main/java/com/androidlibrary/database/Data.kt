@@ -7,4 +7,5 @@ import android.content.ContentValues
  */
 interface Data {
     fun getContentValues() : ContentValues
+    fun getPrimaryKey() : String
 }

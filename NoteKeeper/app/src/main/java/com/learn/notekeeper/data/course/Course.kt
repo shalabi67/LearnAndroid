@@ -46,4 +46,5 @@ data class Course(val courseId:Int, var courseTitle:String) : Parcelable, Data {
 
         return contentValues
     }
+    override fun getPrimaryKey(): String = courseId.toString()
 }

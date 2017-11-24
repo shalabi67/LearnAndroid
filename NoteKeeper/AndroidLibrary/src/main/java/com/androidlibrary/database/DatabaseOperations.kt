@@ -33,6 +33,9 @@ class DatabaseOperations(val database: SQLiteDatabase) {
         return database.query(table, columns, selection, selectionArgs, groupBy, having, orderBy)
     }
 
+    fun <T : Data> update(table : Table, data : T) : Int {
+        return update(table.getName(), data.getContentValues(), "${table.columns.primaryKey!!.columnName} = ?", arrayOf("${data.getPrimaryKey()}") )
+    }
     fun update(table: String, values: ContentValues, whereClause: String, whereArgs: Array<String>): Int {
         return database.update(table, values, whereClause, whereArgs)
 

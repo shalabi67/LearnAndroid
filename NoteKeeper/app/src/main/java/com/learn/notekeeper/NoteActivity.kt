@@ -313,13 +313,26 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
     }
 
     private fun saveNote() {
+        val databaseOperations = NotesKeeperDatabase.create(this).open()
         note.noteTitle = titleView.text.toString()
         note.noteText = textView.text.toString()
-        note.course = spinner.selectedItem as Course
+        note.course = getSelectedCourse()
 
         if (note.noteId == -1) {
             Notes.addNote(note)
         }
+        else {
+            Notes.updateNote(note, databaseOperations)
+        }
+
+        databaseOperations.close()
+    }
+
+    private fun getSelectedCourse(): Course {
+        val selectedPosition = spinner.selectedItemPosition
+        val cursor = coursesAdapter.cursor
+        cursor.moveToPosition(selectedPosition)
+        return CoursesTable().read<Course>(cursor)
     }
 
     override fun onResume() {

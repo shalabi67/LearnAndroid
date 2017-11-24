@@ -1,11 +1,13 @@
 package com.learn.notekeeper.data.note
 
+import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import android.util.Log
 import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.course.Courses
 import com.learn.notekeeper.datalayer.CoursesTable
+import com.learn.notekeeper.datalayer.NotesKeeperDatabase
 import com.learn.notekeeper.datalayer.NotesTable
 import com.learn.notekeeper.datalayer.NotesView
 
@@ -70,5 +72,10 @@ object Notes {
         val selectionParameters: Array<String> = arrayOf(noteId.toString())
 
         return databaseOperations.query(notesView, selectionCriteria, selectionParameters)
+    }
+
+    fun updateNote(note : Note, databaseOperations: DatabaseOperations) {
+        databaseOperations.update(NotesTable(), note)
+
     }
 }
