@@ -10,8 +10,10 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import com.androidlibrary.database.DatabaseOperations
 import com.learn.notekeeper.data.note.Note
 import com.learn.notekeeper.data.note.Notes
+import com.learn.notekeeper.datalayer.NotesKeeperDatabase
 
 import kotlinx.android.synthetic.main.activity_note_list.*
 
@@ -19,9 +21,11 @@ class NoteListActivity : AppCompatActivity() {
     companion object {
         val NOTE = "com.learn.notekeeper.NOTE"
         val NOTE_POSITION = "com.learn.notekeeper.NOTE_POSITION"
+        val SELECTED_NOTE_ID = "com.learn.notekeeper.SELECTED_NOTE_ID"
     }
 
-    lateinit var noteRecyclerAdapter : NoteRecyclerAdapter
+    private lateinit var noteRecyclerAdapter : NoteRecyclerAdapter
+    private lateinit var databaseOperations : DatabaseOperations
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +38,7 @@ class NoteListActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
 
+        databaseOperations = NotesKeeperDatabase.create(this).openReadable()
         initNotesList()
     }
 
@@ -52,7 +57,7 @@ class NoteListActivity : AppCompatActivity() {
         val notesLayoutManager = LinearLayoutManager(this)
         notesRecyclerView.layoutManager = notesLayoutManager
 
-        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.notes)
+        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.getNotesCursor(databaseOperations))
         notesRecyclerView.adapter = noteRecyclerAdapter
 
         //android.support.constraint.ConstraintLayout

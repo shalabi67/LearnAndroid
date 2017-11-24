@@ -1,6 +1,7 @@
 package com.learn.notekeeper
 
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
@@ -14,12 +15,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import com.androidlibrary.database.DatabaseOperations
+import com.androidlibrary.ui.loader.DataFeeder
 import com.learn.notekeeper.data.course.Courses
+import com.learn.notekeeper.data.course.CoursesLoader
 import com.learn.notekeeper.data.note.Notes
+import com.learn.notekeeper.data.note.NotesLoader
+import com.learn.notekeeper.datalayer.NotesKeeperDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, DataFeeder {
+
+
     companion object {
         val NOTE = "com.learn.notekeeper.NOTE"
         val NOTE_POSITION = "com.learn.notekeeper.NOTE_POSITION"
@@ -29,6 +37,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit var noteRecyclerAdapter : NoteRecyclerAdapter
     lateinit var coursesRecyclerAdapter : CourseRecyclerAdapter
+    lateinit var databaseOperations : DatabaseOperations
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +63,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         listRecyclerView = findViewById<RecyclerView>(R.id.list_items)
 
-        initRecycleAdapters()
 
-        displayNotes()
+        val database = NotesKeeperDatabase.create(this)
+        databaseOperations = database.openReadable()
+
+        //initRecycleAdapters()
+
+        //displayNotes()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        databaseOperations.close()
     }
 
     private fun displayNotes() {
@@ -86,8 +105,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // initNotesList()
         //noteRecyclerAdapter.notifyDataSetChanged()
-        displayNotes()
+        //initRecycleAdapters()
+        //displayNotes()
+
+
+        loaderManager.restartLoader(NotesLoader.ID, null, NotesLoader(this, databaseOperations))
         updateNavigationHeader()
+    }
+    override fun fillData(loaderId: Int, cursor: Cursor) {
+        if(loaderId == CoursesLoader.ID) {
+            coursesRecyclerAdapter = CourseRecyclerAdapter(this, cursor)
+            displayCourses()
+        }
+        else if(loaderId == NotesLoader.ID) {
+            noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.getNotesCursor(databaseOperations))
+            displayNotes()
+        }
+
+
     }
 
     private fun updateNavigationHeader() {
@@ -105,8 +140,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun initRecycleAdapters() {
-        coursesRecyclerAdapter = CourseRecyclerAdapter(this, Courses.courses)
-        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.notes)
+        //Notes.getNotes(databaseOperations)
+        //Courses.getCourses(databaseOperations)
+
+        coursesRecyclerAdapter = CourseRecyclerAdapter(this, Courses.getCoursesCursor(databaseOperations))
+        noteRecyclerAdapter = NoteRecyclerAdapter(this, Notes.getNotesCursor(databaseOperations))
     }
 
     override fun onBackPressed() {
@@ -140,11 +178,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_notes -> {
-                displayNotes()
+                loaderManager.restartLoader(NotesLoader.ID, null, NotesLoader(this, databaseOperations))
                 showMessage(R.string.nots_navigation_message)
             }
             R.id.nav_courses -> {
-                displayCourses()
+                loaderManager.restartLoader(CoursesLoader.ID, null, CoursesLoader(this, databaseOperations))
                 showMessage(R.string.courses_navigation_message)
 
             }

@@ -1,6 +1,7 @@
 package com.learn.notekeeper
 
 import android.content.Context
+import android.database.Cursor
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.learn.notekeeper.data.course.Course
 import com.learn.notekeeper.data.course.Courses
+import com.learn.notekeeper.datalayer.CoursesTable
 
 /**
  * Created by mohammad on 11/5/2017.
@@ -20,15 +22,17 @@ class CourseRecyclerAdapter : RecyclerView.Adapter<CourseRecyclerAdapter.ViewHol
     }
     val context : Context
     val layoutInflater : LayoutInflater
-    val courses : List<Course>
+    //val courses : List<Course>
+    val cursor : Cursor
 
-    constructor(context : Context, courses : List<Course>) {
+    constructor(context : Context, cursor : Cursor) {
         this.context = context
         layoutInflater = LayoutInflater.from(context)
-        this.courses = courses
+        this.cursor = cursor
     }
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        val course = courses.get(position)
+        cursor.moveToPosition(position)
+        val course = CoursesTable().read<Course>(cursor)
 
         if(holder == null) {
             Log.w(TAG, "onBindViewHolder viewHolder is null")
@@ -44,13 +48,12 @@ class CourseRecyclerAdapter : RecyclerView.Adapter<CourseRecyclerAdapter.ViewHol
         return ViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int {
-       return courses.size
-    }
+    override fun getItemCount(): Int = cursor.count
 
-    class ViewHolder : RecyclerView.ViewHolder {
+    inner class ViewHolder : RecyclerView.ViewHolder {
         val courseView : TextView
         var currentPosition : Int = -1
+
         constructor(itemView : View) : super(itemView) {
             courseView = itemView.findViewById(R.id.text_course)
 
@@ -63,7 +66,8 @@ class CourseRecyclerAdapter : RecyclerView.Adapter<CourseRecyclerAdapter.ViewHol
             intent.putExtra(NoteListActivity.NOTE_POSITION, currentPosition)
             view.context.startActivity(intent)
             */
-            Snackbar.make(view, "The selected course: ${Courses.courses.get(currentPosition)}",
+            cursor.moveToPosition(currentPosition)
+            Snackbar.make(view, "The selected course: ${CoursesTable().read<Course>(cursor)}",
                     Snackbar.LENGTH_LONG).show()
         }
 
