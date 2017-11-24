@@ -7,4 +7,9 @@
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">127294954632717</string>
     <string name="login">Login</string>
+
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">73OpUTA9mNbjvsnBDWUEcT0Cw</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">uTHfy7w2iP88pKVhVwKKuBtqIDHtjpiO0KlKRlFwF8Zt0ivvG2</string>
+    <string name="CONSUMER_KEY">73OpUTA9mNbjvsnBDWUEcT0Cw</string>
+    <string name="CONSUMER_SECRET">uTHfy7w2iP88pKVhVwKKuBtqIDHtjpiO0KlKRlFwF8Zt0ivvG2</string>
 </resources>
