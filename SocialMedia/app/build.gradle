@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -48,8 +50,7 @@ dependencies {
     compile 'com.twitter.sdk.android:twitter-mopub:3.1.1'
     */
 
-    // https://mvnrepository.com/artifact/com.google.gms/google-services
-    //compile group: 'com.google.gms', name: 'google-services', version: '3.0.0'
+    compile 'com.google.android.gms:play-services-auth:9.0.0'
 
 
 }

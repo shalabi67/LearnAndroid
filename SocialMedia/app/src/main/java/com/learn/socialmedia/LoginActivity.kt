@@ -16,6 +16,13 @@ import com.twitter.sdk.android.core.TwitterException
 import com.twitter.sdk.android.core.identity.TwitterAuthClient
 import android.R.attr.data
 import com.facebook.*
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.common.api.Status
 
 
 class LoginActivity : AppCompatActivity() {
@@ -26,6 +33,9 @@ class LoginActivity : AppCompatActivity() {
     lateinit var  facebookSignInButton : LoginButton
     lateinit var facebookCallbackManager : CallbackManager
     lateinit var twitterLoginButton : TwitterLoginButton
+    lateinit var googleSignInButton : SignInButton
+    private var mGoogleApiClient: GoogleApiClient? = null
+
     var twitterSession : TwitterSession? = null
     var facebookAccessToken : AccessToken? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +99,45 @@ class LoginActivity : AppCompatActivity() {
         }
 
 
+        googleSignInButton = findViewById<View>(R.id.google_sign_in_button) as SignInButton
+        //findViewById(R.id.signOut)
+        googleSignInButton.setOnClickListener(View.OnClickListener { v ->
+            signInWithGoogle()
+            when (v.id) {
+            // ...
+             //   R.id.signOut -> signOutFromGoogle()
+            }
+        })
+
+
     }
+
+    private fun signInWithGoogle() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient?.disconnect()
+        }
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build()
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build()
+
+        val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+        startActivityForResult(signInIntent, 9001)
+    }
+
+    private fun signOutFromGoogle() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                object : ResultCallback<Status> {
+                    override fun onResult(status: Status) {
+
+                    }
+                })
+    }
+
+
     var userEmail  = ""
     private fun getTwitterEmail()  {
         val session = twitterSession?:return
@@ -116,6 +164,15 @@ class LoginActivity : AppCompatActivity() {
 
         if(requestCode == 140) {
             twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode == 9001) {
+            val result : GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+            if(result.isSuccess()) {
+                val client : GoogleApiClient? = mGoogleApiClient;
+                result.getSignInAccount();
+            } else {
+                //handleSignInResult(...);
+            }
         } else {
             facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
