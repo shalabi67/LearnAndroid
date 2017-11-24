@@ -6,20 +6,16 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
-import com.facebook.CallbackManager
-import com.facebook.FacebookSdk
 import com.facebook.login.widget.LoginButton
-import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.facebook.FacebookCallback
 import com.twitter.sdk.android.core.*
 import java.util.concurrent.Callable
 import com.twitter.sdk.android.core.identity.TwitterLoginButton
 import com.twitter.sdk.android.core.TwitterException
 import com.twitter.sdk.android.core.identity.TwitterAuthClient
-
-
+import android.R.attr.data
+import com.facebook.*
 
 
 class LoginActivity : AppCompatActivity() {
@@ -31,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
     lateinit var facebookCallbackManager : CallbackManager
     lateinit var twitterLoginButton : TwitterLoginButton
     var twitterSession : TwitterSession? = null
+    var facebookAccessToken : AccessToken? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,7 +39,8 @@ class LoginActivity : AppCompatActivity() {
         facebookSignInButton.registerCallback(facebookCallbackManager,
                 object : FacebookCallback<LoginResult> {
                     override fun onSuccess(loginResult: LoginResult) {
-                        //TODO: Use the Profile class to get information about the current user.
+                        Log.d(TAG, "Facebook oauth success")
+                        facebookAccessToken = loginResult.accessToken
                         handleSignInResult(object : Callable<Void> {
                             @Throws(Exception::class)
                             override fun call(): Void? {
@@ -67,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
         twitterLoginButton = findViewById<TwitterLoginButton>(R.id.login_button)
         twitterLoginButton.callback = object : Callback<TwitterSession>() {
             override fun success(result: Result<TwitterSession>) {
+                val userName = result.data.userName
                 twitterSession = TwitterCore.getInstance().sessionManager.activeSession
                 val session = twitterSession?:return
                 val authToken = session.authToken
@@ -74,6 +73,7 @@ class LoginActivity : AppCompatActivity() {
                 val secret = authToken.secret
                 Log.d(TAG, "Token = $token")
                 Log.d(TAG, "Secret = $secret")
+                Log.d(TAG, "User name = $userName")
 
                 //get email
                 getTwitterEmail()
