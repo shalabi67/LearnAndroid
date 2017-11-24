@@ -72,7 +72,7 @@ class NoteRecyclerAdapter : RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>
         val titleView : TextView
         val courseView : TextView
         //var currentPosition : Int = -1
-        var noteId : Int = Note.NEW_NOTE_ID
+        var noteId : Long = Note.NEW_NOTE_ID
         constructor(itemView : View) : super(itemView) {
             titleView = itemView.findViewById(R.id.text_title)
             courseView = itemView.findViewById(R.id.text_course)

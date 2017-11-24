@@ -11,11 +11,18 @@ class Columns : ArrayList<Column>() {
         val TAG = Columns::class.java.name
     }
     var primaryKey : Column? = null
+    var autoincrement : Column? = null
     override fun add(column: Column): Boolean {
         if(primaryKey == null && column.isPrimaryKey()) {
             primaryKey = column
         }
+        if(autoincrement == null && column.isAutoIncrement()) {
+            autoincrement = column
+        }
         return super.add(column)
+    }
+    fun getInsertionColumns() : String {
+        return this.filter {column -> column != autoincrement}.map { column -> column.columnName }.joinToString(",")
     }
 
     fun getColumnsString(function : (column : Column) -> String = {column -> column.toString()} ): String {

@@ -50,7 +50,7 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
     lateinit private var oldNote:Note
 
     var position : Int = NEW_NOTE_POSITION
-    var noteId : Int = Note.NEW_NOTE_ID
+    var noteId : Long = Note.NEW_NOTE_ID
     lateinit var databaseOperations : DatabaseOperations
 
     private lateinit var coursesAdapter: SimpleCursorAdapter
@@ -62,18 +62,24 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
         setContentView(R.layout.activity_note)
         setSupportActionBar(toolbar)
 
-        imageView = findViewById<ImageView>(R.id.imageview_image)
+
 
         databaseOperations = NotesKeeperDatabase.create(this).openReadable()
 
         spinner = findViewById<Spinner>(R.id.spinner_courses)
+        titleView = findViewById<TextView>(R.id.text_note_title)
+        textView = findViewById<TextView>(R.id.text_note_text)
+        imageView = findViewById<ImageView>(R.id.imageview_image)
+
         //val coursesAdapter = ArrayAdapter<Course>(this, android.R.layout.simple_spinner_item, Courses.courses)
         displayCourses(null)
         loaderManager.initLoader(CoursesLoader.ID, null, CoursesLoader(this, databaseOperations))
 
-        noteId = intent.getIntExtra(NoteListActivity.SELECTED_NOTE_ID, Note.NEW_NOTE_ID)
+        noteId = intent.getLongExtra(NoteListActivity.SELECTED_NOTE_ID, Note.NEW_NOTE_ID)
         if(noteId != Note.NEW_NOTE_ID) {
             loaderManager.initLoader(NoteLoader.ID, null, NoteLoader(noteId, this, databaseOperations))
+        } else {
+            note = Note(Note.NEW_NOTE_ID, "", "")
         }
 
         //displayNote(getNoteUsingExtra)
@@ -108,12 +114,8 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
     }
 
     private fun displayNote() {
-        titleView = findViewById<TextView>(R.id.text_note_title)
         titleView.text = note.noteTitle
-
-        textView = findViewById<TextView>(R.id.text_note_text)
         textView.text = note.noteText
-
         imageView.setImageBitmap(note.image)
 
         val spinnerView = findViewById<Spinner>(R.id.spinner_courses)
@@ -318,8 +320,8 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
         note.noteText = textView.text.toString()
         note.course = getSelectedCourse()
 
-        if (note.noteId == -1) {
-            Notes.addNote(note)
+        if (note.noteId == Note.NEW_NOTE_ID) {
+            note = Notes.addNote(note, databaseOperations)
         }
         else {
             Notes.updateNote(note, databaseOperations)

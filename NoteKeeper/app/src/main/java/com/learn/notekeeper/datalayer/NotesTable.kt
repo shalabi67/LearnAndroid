@@ -26,6 +26,7 @@ class NotesTable : Table {
                     ColumnPropertyBuilder()
                             .add(ColumnProperty.NOT_NULL)
                             .add(ColumnProperty.PRIMARY_KEY)
+                            .add(ColumnProperty.AUTOINCREMENT)
                             .build()))
 
             tableColumns.add(Column(TITLE, ColumnTypeEnum.Text,
@@ -51,7 +52,7 @@ class NotesTable : Table {
         tableName = NotesTable.tableName
     }
     override fun <T : Data> read(cursor: Cursor): T {
-        val note  = Note(cursor.getInt(0),
+        val note  = Note(cursor.getLong(0),
                 cursor.getString(1),
                 cursor.getString(2))
 

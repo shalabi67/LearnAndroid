@@ -21,7 +21,9 @@ open class Column(val columnName: String, val type: ColumnTypeEnum, val properti
         return names
     }
 
-    fun isPrimaryKey() : Boolean {
+    fun isPrimaryKey() : Boolean = isKey(ColumnPropertyEnum.PrimaryKey)
+    fun isAutoIncrement() : Boolean = isKey(ColumnPropertyEnum.Autoincrement)
+    private fun isKey(columnProperty : ColumnPropertyEnum) : Boolean {
         val result = properties.find { property -> property.columnPropertyEnum == ColumnPropertyEnum.PrimaryKey }
         return result != null
     }
@@ -32,7 +34,7 @@ open class Column(val columnName: String, val type: ColumnTypeEnum, val properti
 
     private fun getColumnType(): String {
         when (type) {
-            ColumnTypeEnum.Int -> return "int"
+            ColumnTypeEnum.Int -> return "INTEGER"
             ColumnTypeEnum.Text -> return "text"
             ColumnTypeEnum.Blob -> return "blob"
             ColumnTypeEnum.Decimal -> return "decimal"

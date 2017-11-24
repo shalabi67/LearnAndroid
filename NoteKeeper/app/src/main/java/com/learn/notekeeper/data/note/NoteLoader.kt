@@ -16,7 +16,7 @@ import com.androidlibrary.ui.loader.DataLoader
 /**
  * Created by mohammad on 11/23/2017.
  */
-class NoteLoader(val noteId : Int, dataFeeder: DataFeeder, databaseOperations: DatabaseOperations)
+class NoteLoader(val noteId : Long, dataFeeder: DataFeeder, databaseOperations: DatabaseOperations)
     : DataLoader(dataFeeder, databaseOperations) {
     companion object {
         val TAG = NoteLoader::class.java.name

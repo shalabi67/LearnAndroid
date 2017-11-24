@@ -20,7 +20,7 @@ class DatabaseOperations(val database: SQLiteDatabase) {
     }
 
     fun <T : Data> insert(table : Table, data : T) : Long {
-        return insert(table.getName(), table.columns.getColumnsString(), data.getContentValues())
+        return insert(table.getName(), table.columns.getInsertionColumns(), data.getContentValues())
     }
     fun insert(table: String, nullColumnHack: String, values: ContentValues): Long {
         return database.insert(table, nullColumnHack, values)

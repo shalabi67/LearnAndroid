@@ -16,7 +16,7 @@ import com.learn.notekeeper.datalayer.NotesView
  */
 object Notes {
     val TAG = Notes::class.java.name
-    private var id : Int =0;
+    private var id : Long =0;
     /*
     val notes = mutableListOf<Note>(
             Note(++id, "note 1", "", Courses.getCourse(4)),
@@ -28,10 +28,13 @@ object Notes {
             */
     var notes : MutableList<Note> = mutableListOf()
 
-    fun addNote(note : Note) : Note {
+    fun addNote(note : Note, databaseOperations: DatabaseOperations) : Note {
         //val note = Note(++id, "", "")
-        note.noteId = ++id
-        notes.add(note)
+        //note.noteId = ++id
+        //notes.add(note)
+
+        val id : Long = databaseOperations.insert(NotesTable(), note)
+        note.noteId = id
         return note
     }
 
@@ -53,7 +56,7 @@ object Notes {
         return databaseOperations.query(NotesView(), orderBy = orderBy)
     }
 
-    fun getNoteById(databaseOperations : DatabaseOperations, noteId : Int) : Note {
+    fun getNoteById(databaseOperations : DatabaseOperations, noteId : Long) : Note {
         val cursor = getNotesByIdCursor(noteId, databaseOperations)
         val notes = NotesView().fill<Note>(cursor)
         if(notes.size > 1) {
@@ -65,7 +68,7 @@ object Notes {
         return notes[0]
     }
 
-    fun getNotesByIdCursor(noteId: Int, databaseOperations: DatabaseOperations): Cursor {
+    fun getNotesByIdCursor(noteId: Long, databaseOperations: DatabaseOperations): Cursor {
         val notesView = NotesView()
         val noteIdColumnName = notesView.columns.getColumnByName(BaseColumns._ID, NotesTable())
         val selectionCriteria = "${noteIdColumnName.getColumnNameForQuery()} = ?"

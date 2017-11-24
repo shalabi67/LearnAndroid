@@ -15,10 +15,10 @@ import com.learn.notekeeper.datalayer.NotesView
 /**
  * Created by mohammad on 11/3/2017.
  */
-data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : Parcelable, Data {
+data class Note(var noteId : Long, var noteTitle:String, var noteText:String) : Parcelable, Data {
 
     companion object {
-        val NEW_NOTE_ID = 0
+        val NEW_NOTE_ID : Long = 0
         fun getEmptyNote() : Note {
             return Note(NEW_NOTE_ID, "", "")
         }
@@ -38,7 +38,7 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
     }
     var course : Course? = null
     var image : Bitmap? = null
-    constructor( noteId : Int,  noteTitle:String,  noteText:String,  course : Course) : this(noteId, noteTitle, noteText) {
+    constructor( noteId : Long,  noteTitle:String,  noteText:String,  course : Course) : this(noteId, noteTitle, noteText) {
         this.course = course
     }
     constructor() : this(0, "", "") {
@@ -46,14 +46,14 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.readString(),
             parcel.readString(),
             parcel.readParcelable(Course::class.java.classLoader)) {
     }
 
     override fun writeToParcel(dest: Parcel?, flag: Int) {
-        dest?.writeInt(noteId)
+        dest?.writeLong(noteId)
         dest?.writeString(noteTitle)
         dest?.writeString(noteText)
 
@@ -81,7 +81,7 @@ data class Note(var noteId : Int, var noteTitle:String, var noteText:String) : P
 
     override fun getContentValues(): ContentValues {
         val contentValues = ContentValues()
-        contentValues.put(BaseColumns._ID, noteId)
+        //contentValues.put(BaseColumns._ID, noteId)
         contentValues.put(NotesTable.TITLE, noteTitle)
         contentValues.put(NotesTable.DESCRIPTION, noteText)
         contentValues.put(NotesTable.COURSE_ID, course?.courseId)
