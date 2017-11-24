@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.Loader
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.MediaStore
@@ -315,19 +316,39 @@ class NoteActivity : AppCompatActivity(), DataFeeder {
     }
 
     private fun saveNote() {
-        val databaseOperations = NotesKeeperDatabase.create(this).open()
+
         note.noteTitle = titleView.text.toString()
         note.noteText = textView.text.toString()
         note.course = getSelectedCourse()
 
         if (note.noteId == Note.NEW_NOTE_ID) {
-            note = Notes.addNote(note, databaseOperations)
+            val task = object : AsyncTask<String, String, String>() {
+                override fun doInBackground(vararg params: String?): String {
+                    val databaseOperations = NotesKeeperDatabase.create(applicationContext).open()
+                    note = Notes.addNote(note, databaseOperations)
+                    databaseOperations.close()
+                    return ""
+                }
+
+            }
+            task.execute()
+
         }
         else {
-            Notes.updateNote(note, databaseOperations)
+            val task = object : AsyncTask<String, String, String>() {
+                override fun doInBackground(vararg params: String?): String {
+                    val databaseOperations = NotesKeeperDatabase.create(applicationContext).open()
+                    Notes.updateNote(note, databaseOperations)
+                    databaseOperations.close()
+                    return ""
+                }
+
+            }
+            task.execute()
+
         }
 
-        databaseOperations.close()
+
     }
 
     private fun getSelectedCourse(): Course {
