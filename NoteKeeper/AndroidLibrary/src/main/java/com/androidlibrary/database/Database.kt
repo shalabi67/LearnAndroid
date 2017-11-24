@@ -1,13 +1,11 @@
 package com.androidlibrary.database
 
-import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteDatabase
-import android.database.SQLException
-import com.androidlibrary.Debugger
+import com.androidlibrary.database.indexes.Index
 import java.util.*
+import kotlin.collections.HashMap
 
 
 /**
@@ -22,8 +20,13 @@ abstract class Database {
     var databaseVersion = 1
 
 
-    internal var tables: MutableList<Table> = ArrayList<Table>()
-    internal var upgradeTables: MutableList<Table> = ArrayList<Table>()
+    private var tables: MutableList<Table> = ArrayList<Table>()
+    private var upgradeTables: MutableMap<Int, MutableList<Table>> = HashMap<Int, MutableList<Table>>()
+
+    private var upgradeStatments: MutableMap<Int, MutableList<String>> = HashMap<Int, MutableList<String>>()
+
+    private var indexes: MutableList<Index> = ArrayList<Index>()
+    private var upgradeIndexes:  MutableMap<Int, MutableList<Index>> = HashMap<Int, MutableList<Index>>()
 
     protected constructor(context: Context, name: String, factory: CursorFactory?,
                           version: Int) {
@@ -39,40 +42,75 @@ abstract class Database {
         this.databaseName = fullPath
         this.databaseVersion = version
 
+        @Suppress("LeakingThis")
         dbHelper = SqliteHelper(this, context, factory, version)
 
     }
 
-    fun addTable(table: Table?) {
-        if (table == null)
-            return
+    fun addTable(table: Table) {
         tables.add(table)
     }
+    fun addUpgradeTable(version : Int, table: Table) {
+        var tables : MutableList<Table> = ArrayList<Table>()
+        if(upgradeTables.contains(version)) {
+            tables = upgradeTables.getValue(version)
+        }
+        tables.add(table)
+        upgradeTables.put(version, tables)
+    }
+    fun addIndex(index : Index) {
+        indexes.add(index)
+    }
+    fun addUpgradeIndex(version : Int, index : Index) {
+        var indexes : MutableList<Index> = ArrayList<Index>()
+        if(upgradeIndexes.contains(version)) {
+            indexes = upgradeIndexes.getValue(version)
+        }
+        indexes.add(index)
+        upgradeIndexes.put(version, indexes)
+    }
 
-    fun create(sqliteDatabase: SQLiteDatabase?)  {
-        if(sqliteDatabase == null)
-            return
-        val databaseOperations = DatabaseOperations(sqliteDatabase)
+    fun create(database: SQLiteDatabase)  {
+        val databaseOperations = DatabaseOperations(database)
         for (table in tables) {
             table.create(databaseOperations)
         }
+
+        for(index in indexes) {
+            index.create(databaseOperations)
+        }
+
+        upgrade(database, 1, databaseVersion)
 
         initDatabaseData(databaseOperations)
     }
     abstract fun initDatabaseData( databaseOperations : DatabaseOperations)
 
-    fun addUpgradeTable(table: Table?) {
-        if (table == null)
-            return
-        upgradeTables.add(table)
-    }
 
-    fun upgrade(sqliteDatabase: SQLiteDatabase?) {
-        if(sqliteDatabase == null)
-            return
-        val databaseOperations = DatabaseOperations(sqliteDatabase)
-        for (table in upgradeTables) {
-            table.upgrade()
+
+    fun upgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        val databaseOperations = DatabaseOperations(database)
+        for(version in oldVersion+1 .. newVersion) {
+            val tables = upgradeTables[version]
+            if(tables != null) {
+                for (table in tables) {
+                    table.create(databaseOperations)
+                }
+            }
+
+            val indexes = upgradeIndexes[version]
+            if(indexes != null) {
+                for (index in indexes) {
+                    index.create(databaseOperations)
+                }
+            }
+
+            val sqls = upgradeStatments[version]
+            if(sqls != null) {
+                for (sql in sqls) {
+                    databaseOperations.executeSQL(sql)
+                }
+            }
         }
 
         initDatabaseUpgradeData(databaseOperations)
@@ -80,13 +118,8 @@ abstract class Database {
     abstract fun initDatabaseUpgradeData( databaseOperations : DatabaseOperations)
 
 
-    fun open() : DatabaseOperations {
-        return DatabaseOperations(dbHelper.getWritableDatabase())
-    }
+    fun open() : DatabaseOperations = DatabaseOperations(dbHelper.writableDatabase)
 
-
-    fun openReadable() : DatabaseOperations {
-        return DatabaseOperations(dbHelper.getReadableDatabase())
-    }
+    fun openReadable() : DatabaseOperations =  DatabaseOperations(dbHelper.readableDatabase)
 
 }

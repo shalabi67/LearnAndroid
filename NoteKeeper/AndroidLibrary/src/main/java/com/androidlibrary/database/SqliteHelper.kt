@@ -12,12 +12,12 @@ class SqliteHelper(val database : Database, context : Context, factory : SQLiteD
     constructor(database : Database, context : Context) : this(database, context, null, database.databaseVersion)  {
 
     }
-    override fun onCreate(db: SQLiteDatabase?) {
-        database.create(db);
+    override fun onCreate(db: SQLiteDatabase) {
+        database.create(db)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        database.upgrade(db)
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        database.upgrade(db, oldVersion, newVersion)
     }
 
 
