@@ -12,4 +12,5 @@
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">uTHfy7w2iP88pKVhVwKKuBtqIDHtjpiO0KlKRlFwF8Zt0ivvG2</string>
     <string name="CONSUMER_KEY">73OpUTA9mNbjvsnBDWUEcT0Cw</string>
     <string name="CONSUMER_SECRET">uTHfy7w2iP88pKVhVwKKuBtqIDHtjpiO0KlKRlFwF8Zt0ivvG2</string>
+    <string name="google_client_id">753178686471-ua1gkmu26gs43rnrqocb0nu89ehpq81q.apps.googleusercontent.com</string>
 </resources>

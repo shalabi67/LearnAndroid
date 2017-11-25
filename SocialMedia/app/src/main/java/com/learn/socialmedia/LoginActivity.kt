@@ -23,6 +23,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.common.api.Status
+import android.R.attr.data
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+
+
 
 
 class LoginActivity : AppCompatActivity() {
@@ -102,9 +106,8 @@ class LoginActivity : AppCompatActivity() {
         googleSignInButton = findViewById<View>(R.id.google_sign_in_button) as SignInButton
         //findViewById(R.id.signOut)
         googleSignInButton.setOnClickListener(View.OnClickListener { v ->
-            signInWithGoogle()
             when (v.id) {
-            // ...
+                R.id.google_sign_in_button -> signInWithGoogle()
              //   R.id.signOut -> signOutFromGoogle()
             }
         })
@@ -119,6 +122,9 @@ class LoginActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken(getString(R.string.google_client_id))
+                .requestProfile()
+                .requestServerAuthCode(getString(R.string.google_client_id))
                 .build()
         mGoogleApiClient = GoogleApiClient.Builder(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -167,11 +173,17 @@ class LoginActivity : AppCompatActivity() {
         } else if (requestCode == 9001) {
             val result : GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
-            if(result.isSuccess()) {
+            if(result.isSuccess) {
                 val client : GoogleApiClient? = mGoogleApiClient;
-                result.getSignInAccount();
-            } else {
-                //handleSignInResult(...);
+
+                val googleSignInAccount = result.signInAccount
+                Log.d(TAG, "Email = ${googleSignInAccount?.email}")
+                Log.d(TAG, "Token = ${googleSignInAccount?.idToken}")
+                Log.d(TAG, "Display Name = ${googleSignInAccount?.displayName}")
+                Log.d(TAG, "Display serverAuthCode = ${googleSignInAccount?.serverAuthCode}")
+                Log.d(TAG, "givenName = ${googleSignInAccount?.givenName}")
+                Log.d(TAG, "familyName = ${googleSignInAccount?.familyName}")
+                Log.d(TAG, "id = ${googleSignInAccount?.id}")
             }
         } else {
             facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
