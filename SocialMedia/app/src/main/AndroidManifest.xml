@@ -32,6 +32,11 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".LoginActivity"></activity>
+<!--
+        <provider android:authorities="com.facebook.app.FacebookContentProvider127294954632717}"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+            -->
     </application>
 
 </manifest>
