@@ -25,8 +25,7 @@ import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.common.api.Status
 import android.R.attr.data
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-
-
+import org.json.JSONObject
 
 
 class LoginActivity : AppCompatActivity() {
@@ -50,18 +49,55 @@ class LoginActivity : AppCompatActivity() {
 
         facebookCallbackManager = CallbackManager.Factory.create()
         facebookSignInButton = findViewById<LoginButton>(R.id.login_facebook_button)
+        facebookSignInButton.setReadPermissions(listOf(
+                "public_profile", "email", "user_birthday", "user_friends" )) //, "user_friends"
         facebookSignInButton.registerCallback(facebookCallbackManager,
                 object : FacebookCallback<LoginResult> {
                     override fun onSuccess(loginResult: LoginResult) {
                         Log.d(TAG, "Facebook oauth success")
                         facebookAccessToken = loginResult.accessToken
+                        Log.d(TAG, "Facebook access token = ${facebookAccessToken.toString()}")
+                        Log.d(TAG, "User Id = ${loginResult.accessToken.userId}")
+                        Log.d(TAG, "Token = ${loginResult.accessToken.token}")
+                        /*
+                        val profile = Profile.getCurrentProfile()
+                        Log.d(TAG, "firstName = ${profile.firstName}")
+                        Log.d(TAG, "lastName = ${profile.lastName}")
+                        Log.d(TAG, "name = ${profile.name}")
+                        */
+
+                        val request : GraphRequest  = GraphRequest.newMeRequest(
+                            loginResult.accessToken,
+                             GraphRequest.GraphJSONObjectCallback() { jsonObject: JSONObject, graphResponse: GraphResponse ->
+                                 val email = jsonObject.getString("email")
+                                 val birthday = jsonObject.getString("birthday")
+                                 val id = jsonObject.getString("id")
+                                 val gender = jsonObject.getString("gender")
+                                 val name = jsonObject.getString("name")
+                                 val first_name = jsonObject.getString("first_name")
+                                 val last_name = jsonObject.getString("last_name")
+
+                                 Log.d(TAG, "email = $email")
+                                 Log.d(TAG, "birthday = $birthday")
+                                 Log.d(TAG, "id = $id")
+                                 Log.d(TAG, "gender = $gender")
+                                 Log.d(TAG, "name = $name")
+                                 Log.d(TAG, "first_name = $first_name")
+                                 Log.d(TAG, "last_name = $last_name")
+                            })
+                        val parameters : Bundle = Bundle()
+                        parameters.putString("fields", "id,name,email,gender,birthday,last_name,first_name")
+                        request.parameters = parameters
+                        request.executeAsync();
+
+                        /*
                         handleSignInResult(object : Callable<Void> {
                             @Throws(Exception::class)
                             override fun call(): Void? {
                                 LoginManager.getInstance().logOut()
                                 return null
                             }
-                        })
+                        })*/
                     }
 
                     override fun onCancel() {
