@@ -22,6 +22,19 @@
             android:title="Tools" />
     </group>
 
+    <item android:title="Social Media">
+        <menu>
+            <item
+                android:id="@+id/nav_twitter"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Twitter" />
+            <item
+                android:id="@+id/nav_google"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Google" />
+        </menu>
+    </item>
+
     <item android:title="Communicate">
         <menu>
             <item
@@ -34,6 +47,8 @@
                 android:title="Send" />
         </menu>
     </item>
+
+
 
     <item android:title="@string/login">
         <menu>

@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         facebookLikeView.setObjectIdAndType(
                 "https://www.facebook.com/AnimatedGreetingCards/",
-                LikeView.ObjectType.OPEN_GRAPH)
+                LikeView.ObjectType.PAGE)
 
 
         val shareButton = findViewById<ShareButton>(R.id.share_btn)
@@ -135,6 +135,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_login -> {
                 val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_twitter -> {
+                val intent = Intent(this, TwitterActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_camera -> {
