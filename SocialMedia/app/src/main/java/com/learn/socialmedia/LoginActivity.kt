@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.common.api.Status
 import com.learn.socialmedia.framework.FacebookLogin
+import com.learn.socialmedia.framework.TwitterLogin
 
 
 class LoginActivity : AppCompatActivity() {
@@ -29,11 +30,12 @@ class LoginActivity : AppCompatActivity() {
     lateinit var facebookLogin : FacebookLogin
     lateinit var facebookTracker : FacebookTracker
 
-    lateinit var twitterLoginButton : TwitterLoginButton
+    //lateinit var twitterLoginButton : TwitterLoginButton
+    lateinit var twitterLogin : TwitterLogin
     lateinit var googleSignInButton : SignInButton
     private var mGoogleApiClient: GoogleApiClient? = null
 
-    var twitterSession : TwitterSession? = null
+    //var twitterSession : TwitterSession? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,34 +43,10 @@ class LoginActivity : AppCompatActivity() {
 
         facebookLogin = FacebookLogin(findViewById<LoginButton>(R.id.login_facebook_button),
                 listOf("public_profile", "email", "user_friends")) //, "user_birthday"
-
         facebookTracker = FacebookTracker(facebookLogin)
 
-        twitterLoginButton = findViewById<TwitterLoginButton>(R.id.login_button)
-        twitterLoginButton.callback = object : Callback<TwitterSession>() {
-            override fun success(result: Result<TwitterSession>) {
-                val userName = result.data.userName
-                twitterSession = TwitterCore.getInstance().sessionManager.activeSession
-                val session = twitterSession?:return
-                val authToken = session.authToken
-                val token = authToken.token
-                val secret = authToken.secret
-                Log.d(TAG, "Token = $token")
-                Log.d(TAG, "Secret = $secret")
-                Log.d(TAG, "User name = $userName")
-
-                //get email
-                getTwitterEmail()
-            }
-
-            override fun failure(exception: TwitterException) {
-                Log.e(TAG, "Twitter login failed.")
-                Log.e(TAG, exception.message)
-
-                Snackbar.make(twitterLoginButton, "Twitter login failed", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
-            }
-        }
+        //twitter login
+        twitterLogin = TwitterLogin(findViewById<TwitterLoginButton>(R.id.login_button))
 
 
         googleSignInButton = findViewById<View>(R.id.google_sign_in_button) as SignInButton
@@ -112,30 +90,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    var userEmail  = ""
-    private fun getTwitterEmail()  {
-        val session = twitterSession?:return
-        val authClient = TwitterAuthClient()
-        authClient.requestEmail(session, object : Callback<String>() {
-            override fun success(result: Result<String>) {
-                val email = result.data?:return
-                Log.d(TAG, email)
-                userEmail = email
-            }
-
-            override fun failure(exception: TwitterException) {
-                userEmail = ""
-            }
-        })
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "requestCode = $requestCode")
 
-        if(requestCode == 140) {
-            twitterLoginButton.onActivityResult(requestCode, resultCode, data);
-        } else if (requestCode == 9001) {
+        twitterLogin.onActivityResult(requestCode, resultCode, data)
+        facebookLogin.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 9001) {
             val result : GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
             if(result.isSuccess) {
@@ -150,8 +113,6 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "familyName = ${googleSignInAccount?.familyName}")
                 Log.d(TAG, "id = ${googleSignInAccount?.id}")
             }
-        } else {
-            facebookLogin.onActivityResult(requestCode, resultCode, data)
         }
 
     }

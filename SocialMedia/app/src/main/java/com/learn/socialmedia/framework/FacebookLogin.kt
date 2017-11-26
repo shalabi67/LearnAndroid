@@ -16,6 +16,9 @@ import com.learn.socialmedia.LoginActivity
  * Created by mohammad on 11/25/2017.
  */
 class FacebookLogin {
+    companion object {
+        val TAG = FacebookLogin::class.java.name
+    }
     private var  facebookSignInButton : LoginButton
     private val facebookCallbackManager : CallbackManager = CallbackManager.Factory.create()
     var facebookAccessToken : AccessToken? = AccessToken.getCurrentAccessToken()
@@ -27,7 +30,10 @@ class FacebookLogin {
         facebookSignInButton.registerCallback(facebookCallbackManager, FacebookLoginCallback())
     }
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 64206) {
+            Log.d(TAG, "onActivityResult called")
+            facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
+        }
     }
     inner class FacebookLoginCallback : FacebookCallback<LoginResult> {
         override fun onSuccess(loginResult: LoginResult) {
