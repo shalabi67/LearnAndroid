@@ -15,6 +15,7 @@
  */
 package com.google.firebase.udacity.friendlychat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -132,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
         });
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
 
-        childEventListener = new MessagesEventListener(mMessageAdapter);
-        messagesReference.addChildEventListener(childEventListener);
+
+
 
         //initialize authentication listener
         authStateListener = new FirebaseAuth.AuthStateListener() {
@@ -141,10 +142,14 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if(firebaseUser != null) {
-                    //user not signed in
-                    Toast.makeText(MainActivity.this, "You are signed in.", Toast.LENGTH_SHORT).show();
-                } else {
                     //user signed in
+                    login(firebaseUser.getDisplayName());
+
+
+                } else {
+                    //user not signed in
+                    logOut();
+
                     // Choose authentication providers
                     List<AuthUI.IdpConfig> providers = Arrays.asList(
                             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -169,6 +174,33 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private void logOut() {
+        mUsername = ANONYMOUS;
+        mMessageAdapter.clear();
+        if(childEventListener != null) {
+            messagesReference.removeEventListener(childEventListener);
+        }
+    }
+
+    private void login(String displayName) {
+        childEventListener = new MessagesEventListener(mMessageAdapter);
+        messagesReference.addChildEventListener(childEventListener);
+        mUsername = displayName;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN) {
+            if(resultCode ==RESULT_OK) {
+                Toast.makeText(this, "signd in", Toast.LENGTH_SHORT).show();
+            }else if(resultCode ==RESULT_CANCELED){
+                Toast.makeText(this, "signd in canceled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
     private void sendClicked(View view) {
         //TODO: send message
 
@@ -188,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.sign_out_menu: {
+                AuthUI.getInstance().signOut(this);
+                return true;
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -200,6 +238,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        firebaseAuth.removeAuthStateListener(authStateListener);
+        logOut();
     }
 }
