@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.learn.android.vectordrawablesvg.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageViewDownload"
+        android:layout_width="264dp"
+        android:layout_height="274dp"
+        app:srcCompat="@drawable/download_animation"
+        tools:layout_editor_absoluteX="57dp"
+        tools:layout_editor_absoluteY="108dp" />
+
+</android.support.constraint.ConstraintLayout>
