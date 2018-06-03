@@ -37,15 +37,15 @@ class NetworkService {
         return observable
     }
     */
-    public fun getData(): Observable<Int> {
+    public fun getData(start : Int): Observable<Int> {
         val observable = Observable.create<Int> { emitter ->
             try {
                 Thread.sleep(1000)
-                emitter.onNext(1)
+                emitter.onNext(1*start)
                 Thread.sleep(200)
-                emitter.onNext(2)
+                emitter.onNext(2*start)
 
-                Observable.just(100, 200, 300, 400)
+                Observable.just(100*start, 200*start, 300*start, 400*start)
                         .subscribe { i -> emitter.onNext(i) }
                 Thread.sleep(200)
                 Observable.just(1000, 2000, 3000, 4000)
