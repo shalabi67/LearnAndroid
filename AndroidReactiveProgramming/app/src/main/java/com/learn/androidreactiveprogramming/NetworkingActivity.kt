@@ -19,6 +19,11 @@ class NetworkingActivity : AppCompatActivity() {
     private fun getServiceData() {
         NetworkService().getData()
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .map { i->
+                    Thread.sleep(100)
+                    i*10
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe{ i -> Log.i("NETWORK", i.toString())}
     }
