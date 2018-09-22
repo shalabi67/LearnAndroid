@@ -1,7 +1,5 @@
 package com.learn.mvpapplication.login
 
-import javax.inject.Inject
-
 class User {
     var userName : String
     var password : String
@@ -10,9 +8,11 @@ class User {
         this.userName = userName.trim()
         this.password = password.trim()
     }
-    fun isValidUser() : Boolean {
-        if(userName.isNullOrEmpty() || password.isNullOrEmpty())
+    fun isValidUser(loggedUser: User): Boolean {
+        if(userName.isEmpty() || password.isEmpty()) {
             return false
-        return true
+        }
+
+        return userName == loggedUser.userName && password == loggedUser.password
     }
 }

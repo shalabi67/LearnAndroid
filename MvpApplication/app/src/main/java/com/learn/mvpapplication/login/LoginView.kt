@@ -26,13 +26,12 @@ class LoginView {
 
         val loginButton = loginActivity.findViewById<Button>(R.id.login_button_id)
         loginButton.setOnClickListener {
-            Toast.makeText(loginActivity,"Login clicked", Toast.LENGTH_LONG)
             loginPresenter.login()
         }
     }
 
     fun showError(errorMessage : String) {
-        Toast.makeText(loginActivity, errorMessage, Toast.LENGTH_SHORT)
+        Toast.makeText(loginActivity, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
     fun close() {
@@ -42,13 +41,7 @@ class LoginView {
     fun getUserName() : String {
         return userNameEditText.text.toString()
     }
-    fun setUserName(userName : String) {
-        userNameEditText.setText(userName)
-    }
     fun getPassword() : String {
         return passwordEditText.text.toString()
-    }
-    fun setPassword(password : String) {
-        passwordEditText.setText(password)
     }
 }

@@ -3,8 +3,8 @@ package com.learn.mvpapplication.login
 import javax.inject.Inject
 
 class LoginPresenter {
-    var loginModel : LoginModel
-    lateinit var loginView: LoginView
+    private var loginModel : LoginModel
+    private lateinit var loginView: LoginView
 
     @Inject
     constructor(loginModel : LoginModel) {
@@ -15,13 +15,14 @@ class LoginPresenter {
         this.loginView = loginView
     }
 
-    fun login() {
+    fun login() : Boolean {
         val user = User(loginView.getUserName(), loginView.getPassword())
-        if(user.isValidUser()) {
-            loginModel.saveUser(user)
+        if(user.isValidUser(loginModel.getLoggedUser())) {
             loginView.close()
+            return true
         } else {
-            loginView.showError("invaled user")
+            loginView.showError("invalid user")
+            return false
         }
     }
 }

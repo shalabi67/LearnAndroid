@@ -1,15 +1,11 @@
 package com.learn.mvpapplication.login
 
-import javax.inject.Inject
-
 class LoginModel {
-    var user : User = User("", "")
-
-    @Inject
-    constructor() {
-
+    companion object {
+        private var validUser: User = User("moh", "sha")
     }
-    fun saveUser(user : User) {
-        this.user = user
+
+    fun getLoggedUser() : User {
+        return validUser
     }
 }
