@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.learn.dagger.simple_custom_annotation.CustomAnnotationActivity
 import com.learn.dagger.simple_example.SimpleExampleActivity
 import com.learn.dagger.simple_module.SimpleModuleExampleActivity
 import com.learn.dagger.simple_qualifier.SimpleQualifierActivity
@@ -77,6 +78,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.simple_qualifier -> {
                 val intent = Intent(this, SimpleQualifierActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.simple_custom_annotation -> {
+                val intent = Intent(this, CustomAnnotationActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_share -> {

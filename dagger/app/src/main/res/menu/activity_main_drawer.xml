@@ -20,6 +20,10 @@
             android:id="@+id/simple_qualifier"
             android:icon="@drawable/ic_menu_manage"
             android:title="Simple qualifier" />
+        <item
+            android:id="@+id/simple_custom_annotation"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Simple custom annotation" />
     </group>
 
     <item android:title="Communicate">
