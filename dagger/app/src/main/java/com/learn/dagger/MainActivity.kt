@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.learn.dagger.simple_example.SimpleExampleActivity
 import com.learn.dagger.simple_module.SimpleModuleExampleActivity
+import com.learn.dagger.simple_qualifier.SimpleQualifierActivity
 import com.learn.dagger.simple_static.SimpleStaticActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -74,8 +75,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, SimpleStaticActivity::class.java)
                 startActivity(intent)
             }
-            R.id.nav_manage -> {
-
+            R.id.simple_qualifier -> {
+                val intent = Intent(this, SimpleQualifierActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_share -> {
 
