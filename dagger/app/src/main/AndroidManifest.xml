@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".simple_example.SimpleExampleActivity" />
-        <activity android:name=".simple_module.SimpleModuleExampleActivity"></activity>
+        <activity android:name=".simple_module.SimpleModuleExampleActivity" />
+        <activity android:name=".simple_static.SimpleStaticActivity"></activity>
     </application>
 
 </manifest>
