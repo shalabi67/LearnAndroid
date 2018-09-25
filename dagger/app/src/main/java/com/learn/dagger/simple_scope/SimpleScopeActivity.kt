@@ -17,8 +17,6 @@ class SimpleScopeActivity : AppCompatActivity() {
 
         simpleScopeComponent = DaggerSimpleScopeComponent.create()
 
-
-
         val button = findViewById<Button>(R.id.incrementButton)
         button.setOnClickListener{
             val simpleScopeFactory = SimpleScopeFactory()

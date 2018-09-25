@@ -28,6 +28,10 @@
             android:id="@+id/simple_scope"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Simple scope" />
+        <item
+            android:id="@+id/simple_subcomponents"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Simple sub-component" />
 
     </group>
 

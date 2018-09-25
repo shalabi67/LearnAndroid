@@ -15,6 +15,7 @@ import com.learn.dagger.simple_module.SimpleModuleExampleActivity
 import com.learn.dagger.simple_qualifier.SimpleQualifierActivity
 import com.learn.dagger.simple_scope.SimpleScopeActivity
 import com.learn.dagger.simple_static.SimpleStaticActivity
+import com.learn.dagger.simple_subcomponent.SubcomponentActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -89,8 +90,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, SimpleScopeActivity::class.java)
                 startActivity(intent)
             }
-            R.id.nav_share -> {
-
+            R.id.simple_subcomponents -> {
+                val intent = Intent(this, SubcomponentActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_send -> {
 
