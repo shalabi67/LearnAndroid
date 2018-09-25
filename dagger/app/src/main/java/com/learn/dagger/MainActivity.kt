@@ -9,8 +9,13 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.learn.dagger.simple_custom_annotation.CustomAnnotationActivity
 import com.learn.dagger.simple_example.SimpleExampleActivity
 import com.learn.dagger.simple_module.SimpleModuleExampleActivity
+import com.learn.dagger.simple_qualifier.SimpleQualifierActivity
+import com.learn.dagger.simple_scope.SimpleScopeActivity
+import com.learn.dagger.simple_static.SimpleStaticActivity
+import com.learn.dagger.simple_subcomponent.SubcomponentActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -69,14 +74,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, SimpleModuleExampleActivity::class.java)
                 startActivity(intent)
             }
-            R.id.nav_slideshow -> {
-
+            R.id.simple_static -> {
+                val intent = Intent(this, SimpleStaticActivity::class.java)
+                startActivity(intent)
             }
-            R.id.nav_manage -> {
-
+            R.id.simple_qualifier -> {
+                val intent = Intent(this, SimpleQualifierActivity::class.java)
+                startActivity(intent)
             }
-            R.id.nav_share -> {
-
+            R.id.simple_custom_annotation -> {
+                val intent = Intent(this, CustomAnnotationActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.simple_scope -> {
+                val intent = Intent(this, SimpleScopeActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.simple_subcomponents -> {
+                val intent = Intent(this, SubcomponentActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_send -> {
 

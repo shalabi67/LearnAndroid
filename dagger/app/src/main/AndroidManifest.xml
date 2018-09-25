@@ -20,7 +20,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".simple_example.SimpleExampleActivity" />
-        <activity android:name=".simple_module.SimpleModuleExampleActivity"></activity>
+        <activity android:name=".simple_module.SimpleModuleExampleActivity" />
+        <activity android:name=".simple_static.SimpleStaticActivity" />
+        <activity android:name=".simple_qualifier.SimpleQualifierActivity" />
+        <activity android:name=".simple_custom_annotation.CustomAnnotationActivity" />
+        <activity android:name=".simple_scope.SimpleScopeActivity" />
+        <activity android:name=".simple_subcomponent.SubcomponentActivity"></activity>
     </application>
 
 </manifest>

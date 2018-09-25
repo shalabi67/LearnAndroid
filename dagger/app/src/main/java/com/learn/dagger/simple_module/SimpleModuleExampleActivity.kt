@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import com.learn.dagger.R
-import com.learn.dagger.configuration.DaggerPersonComponent
+import com.learn.dagger.simple_module.configuration.DaggerPersonComponent
 import com.learn.dagger.simple_module.domain.Person
 import javax.inject.Inject
 
