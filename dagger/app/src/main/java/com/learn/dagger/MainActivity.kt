@@ -13,6 +13,7 @@ import com.learn.dagger.simple_custom_annotation.CustomAnnotationActivity
 import com.learn.dagger.simple_example.SimpleExampleActivity
 import com.learn.dagger.simple_module.SimpleModuleExampleActivity
 import com.learn.dagger.simple_qualifier.SimpleQualifierActivity
+import com.learn.dagger.simple_scope.SimpleScopeActivity
 import com.learn.dagger.simple_static.SimpleStaticActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -82,6 +83,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.simple_custom_annotation -> {
                 val intent = Intent(this, CustomAnnotationActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.simple_scope -> {
+                val intent = Intent(this, SimpleScopeActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_share -> {

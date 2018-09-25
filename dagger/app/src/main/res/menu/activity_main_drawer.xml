@@ -24,6 +24,11 @@
             android:id="@+id/simple_custom_annotation"
             android:icon="@drawable/ic_menu_camera"
             android:title="Simple custom annotation" />
+        <item
+            android:id="@+id/simple_scope"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Simple scope" />
+
     </group>
 
     <item android:title="Communicate">

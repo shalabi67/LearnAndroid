@@ -23,7 +23,8 @@
         <activity android:name=".simple_module.SimpleModuleExampleActivity" />
         <activity android:name=".simple_static.SimpleStaticActivity" />
         <activity android:name=".simple_qualifier.SimpleQualifierActivity" />
-        <activity android:name=".simple_custom_annotation.CustomAnnotationActivity"></activity>
+        <activity android:name=".simple_custom_annotation.CustomAnnotationActivity" />
+        <activity android:name=".simple_scope.SimpleScopeActivity"></activity>
     </application>
 
 </manifest>
