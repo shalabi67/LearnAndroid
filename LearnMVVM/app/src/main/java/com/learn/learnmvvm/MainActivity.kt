@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.learn.learnmvvm.databinding_example.DatabindingActivity
 import com.learn.learnmvvm.mvvm_lifedata.QuotesActivity
+import com.learn.learnmvvm.restaurant_calculator.RestaurantCalculatorActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -70,8 +71,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, DatabindingActivity::class.java )
                 startActivity(intent)
             }
-            R.id.nav_slideshow -> {
-
+            R.id.nav_tip_calculator -> {
+                val intent = Intent(this, RestaurantCalculatorActivity::class.java )
+                startActivity(intent)
             }
             R.id.nav_manage -> {
 

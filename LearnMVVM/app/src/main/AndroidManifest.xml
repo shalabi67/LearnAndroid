@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".mvvm_lifedata.QuotesActivity" />
-        <activity android:name=".databinding_example.DatabindingActivity"></activity>
+        <activity android:name=".databinding_example.DatabindingActivity" />
+        <activity android:name=".restaurant_calculator.RestaurantCalculatorActivity"></activity>
     </application>
 
 </manifest>

@@ -6,4 +6,21 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+
+    <!-- Tip calculator -->
+    <string name="enter_check_amount">Check</string>
+    <string name="tip_percentage_label">Tip Percentage</string>
+    <string name="total_label">Total</string>
+    <string name="total_output_label">Total</string>
+    <string name="tip_output_label">Tip</string>
+    <string name="check_amount_output_label">Check</string>
+    <string name="dollar_amount">$%1$.02f</string>
+    <string name="save_hint">Enter Location</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_load">Load</string>
+    <string name="calculate">Calculate</string>
+    <!-- end of tip calculator -->
+
 </resources>
